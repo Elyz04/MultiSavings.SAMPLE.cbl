@@ -21,11 +21,10 @@
 000000* BALANCE    : 現在の残高                                          
 000000******************************************************************
 000000 01  DCLDB-ACCOUNT-BALANCE.                                       
-000000     10 AB-ACC-ID                   PIC S9(9)       USAGE COMP.             
-000000     10 AB-BALANCE                  PIC S9(13)V9(2) USAGE COMP-3.    
+000000     03 AB-ACC-ID                   PIC S9(9)       USAGE COMP.             
+000000     03 AB-BALANCE                  PIC S9(13)V9(2) USAGE COMP-3.    
 000000******************************************************************
 000000* THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 2       *
-000000******************************************************************
 000000******************************************************************
 000000* DCLGEN TABLE(MYDB.DB_ACCOUNT_SAVINGS)                          *
 000000*        LIBRARY(FPT.SRC.DCLGEN.COBOL(ACCSAV))                   *
@@ -63,18 +62,17 @@
 000000* STATUS       : 状態 (例: 'A'=有効, 'C'=解約)                     *
 000000******************************************************************
 000000 01  DCLDB-ACCOUNT-SAVINGS.                                       
-000000     10 DB-ORDER-ID                 PIC S9(9)       USAGE COMP.             
-000000     10 DB-ACC-ID                   PIC S9(9)       USAGE COMP.             
-000000     10 DB-SAVING-TYPE              PIC X(10).                        
-000000     10 DB-START-DATE               PIC X(8).                         
-000000     10 DB-END-DATE                 PIC X(8).                         
-000000     10 DB-MONEY-ROOT               PIC S9(13)V9(2) USAGE COMP-3.    
-000000     10 DB-INTEREST                 PIC S9(13)V9(2) USAGE COMP-3.    
-000000     10 DB-MONEY                    PIC S9(13)V9(2) USAGE COMP-3.    
-000000     10 DB-STATUS                   PIC X(1).                         
+000000     03 DB-ORDER-ID                 PIC S9(9)       USAGE COMP.             
+000000     03 DB-ACC-ID                   PIC S9(9)       USAGE COMP.             
+000000     03 DB-SAVING-TYPE              PIC X(10).                        
+000000     03 DB-START-DATE               PIC X(8).                         
+000000     03 DB-END-DATE                 PIC X(8).                         
+000000     03 DB-MONEY-ROOT               PIC S9(13)V9(2) USAGE COMP-3.    
+000000     03 DB-INTEREST                 PIC S9(13)V9(2) USAGE COMP-3.    
+000000     03 DB-MONEY                    PIC S9(13)V9(2) USAGE COMP-3.    
+000000     03 DB-STATUS                   PIC X(1).                         
 000000******************************************************************
 000000* THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 9       *
-000000******************************************************************
 000000******************************************************************
 000000* DCLGEN TABLE(MYDB.DB_INTEREST_INFO)                            *
 000000*        LIBRARY(FPT.SRC.DCLGEN.COBOL(INTINFO))                  *
@@ -98,8 +96,8 @@
 000000* INTEREST_RATE  : 利率 (例: 0.0250 = 2.5%)                       *
 000000******************************************************************
 000000 01  DCLDB-INTEREST-INFO.                                         
-000000     10 II-SAVING-TYPE              PIC X(10).                        
-000000     10 II-INTEREST-RATE            PIC S9(1)V9(4)  USAGE COMP-3.      
+000000     03 II-SAVING-TYPE              PIC X(10).                        
+000000     03 II-INTEREST-RATE            PIC S9(1)V9(4)  USAGE COMP-3.      
 000000******************************************************************
 000000* THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 2       *
 000000******************************************************************
