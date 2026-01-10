@@ -3,7 +3,7 @@
 //* 内容：COBOLプログラムのコンパイル、リンク、BIND、実行を行う
 //* 備考：各ステップはDB2連携のために必要
 //********************************************************************
-//(SAMPLEJOB)   JOB (ACCT#),'COBOL',CLASS=A,MSGCLASS=X,                     
+//(SAMPLEJOB)   JOB (ACCT#),'PGM01',CLASS=A,MSGCLASS=X,                     
 //              NOTIFY=&SYSUID                                               
 // SET MEMB=(COBOL_MEMBER)                                                       
 // SET LOAD=(LOAD_DATASET)                                                
