@@ -1,6 +1,6 @@
 000000******************************************************************
 000000* DCLGEN TABLE(MYDB.DB_ACCOUNT_BALANCE)                          *
-000000*        LIBRARY(FPT.SRC.DCLGEN.COBOL(ACCBAL))                   *
+000000*        LIBRARY(XXXXXXXXXX)                                     *
 000000*        ACTION(REPLACE)                                         *
 000000*        LANGUAGE(COBOL)                                         *
 000000*        QUOTE                                                   *
@@ -27,7 +27,7 @@
 000000* THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 2       *
 000000******************************************************************
 000000* DCLGEN TABLE(MYDB.DB_ACCOUNT_SAVINGS)                          *
-000000*        LIBRARY(FPT.SRC.DCLGEN.COBOL(ACCSAV))                   *
+000000*        LIBRARY(XXXXXXXXXX)                                     *
 000000*        ACTION(REPLACE)                                         *
 000000*        LANGUAGE(COBOL)                                         *
 000000*        QUOTE                                                   *
@@ -75,7 +75,7 @@
 000000* THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 9       *
 000000******************************************************************
 000000* DCLGEN TABLE(MYDB.DB_INTEREST_INFO)                            *
-000000*        LIBRARY(FPT.SRC.DCLGEN.COBOL(INTINFO))                  *
+000000*        LIBRARY(XXXXXXXXXX)                                     *
 000000*        ACTION(REPLACE)                                         *
 000000*        LANGUAGE(COBOL)                                         *
 000000*        QUOTE                                                   *
