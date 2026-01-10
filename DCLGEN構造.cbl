@@ -9,7 +9,8 @@
 000000******************************************************************
 000000 EXEC SQL 
 000000     DECLARE MYDB.DB_ACCOUNT_BALANCE TABLE               
-000000     ( ACC_ID                       INTEGER         NOT NULL,           
+000000     ( 
+000000       ACC_ID                       INTEGER         NOT NULL,           
 000000       BALANCE                      DECIMAL(15, 2)  NOT NULL     
 000000     ) 
 000000 END-EXEC.                                                  
@@ -36,7 +37,8 @@
 000000******************************************************************
 000000 EXEC SQL 
 000000     DECLARE MYDB.DB_ACCOUNT_SAVINGS TABLE               
-000000     ( ORDER_ID                     INTEGER         NOT NULL,           
+000000     ( 
+000000       ORDER_ID                     INTEGER         NOT NULL,           
 000000       ACC_ID                       INTEGER         NOT NULL,           
 000000       SAVING_TYPE                  CHAR(10)        NOT NULL,          
 000000       START_DATE                   CHAR(8)         NOT NULL,           
@@ -84,7 +86,8 @@
 000000******************************************************************
 000000 EXEC SQL 
 000000     DECLARE MYDB.DB_INTEREST_INFO TABLE                 
-000000     ( SAVING_TYPE                  CHAR(10)        NOT NULL,          
+000000     ( 
+000000       SAVING_TYPE                  CHAR(10)        NOT NULL,          
 000000       INTEREST_RATE                DECIMAL(5, 4)   NOT NULL      
 000000     ) 
 000000 END-EXEC.                                                  
