@@ -12,7 +12,8 @@
 000000*        2026/01/09 : SQLエラー時はABEND処理                     
 000000*        2026/01/10 : 対象はDB_ACCOUNT_SAVINGSテーブル            
 000000*        2026/01/11 : INTEREST と MONEY フィールドを更新          
-000000*/-------------------------------------------------------------/*         
+000000*/-------------------------------------------------------------/*
+000000 ENVIRONMENT                     DIVISION.         
 000000 DATA                            DIVISION.                                
 000000 WORKING-STORAGE                 SECTION.  
 000000*/-------------------------------------------------------------/*         
@@ -220,7 +221,7 @@
 000000* EXEC-GET-INTEREST-RATE SECTION |                                       
 000000*                                |                                      
 000000*/-------------------------------------------------------------/*      
-000000  EXEC-GET-INTEREST-RATE.
+000000 EXEC-GET-INTEREST-RATE.
 000000*                                                 
 000000      EXEC SQL                                                       
 000000          SELECT INTEREST_RATE                                       
@@ -265,21 +266,19 @@
 000000*                                |
 000000*/-------------------------------------------------------------/*
 000000 CACULATE-FUNC01.
-000000*
-000000*--- 利息計算（全口座共通）
+000000*--- 注記: FUN_001 は現在時点での仮利息のみを計算する
+000000*--- すべての種類の預金に対して同一の計算式を適用する
 000000     COMPUTE WS-AMOUNT-INTEREST =
-000000             AS-MONEY-ROOT      *
-000000             WS-RATE-INTEREST   * 
-000000             WS-DAYS-ACTUAL     / 365 
-000000           
-000000*--- 合計金額
+000000             AS-MONEY-ROOT
+000000           * WS-RATE-INTEREST
+000000           * WS-DAYS-ACTUAL
+000000           / 365
 000000     COMPUTE WS-AMOUNT-TOTAL =
-000000             AS-MONEY-ROOT   +
-000000             WS-AMOUNT-INTEREST.
+000000             AS-MONEY-ROOT + WS-AMOUNT-INTEREST.
 000000*
-000000     EXIT.                                                  
+000000     EXIT.                   
 000000*/-------------------------------------------------------------/*         
-000000*                                | NOTE: 利息計算ロジック（FUN-002）                 
+000000*                                | NOTE: 利息計算ロジック（FUN-002）          
 000000* CACULATE-FUNC02        SECTION |                                      
 000000*                                |                                      
 000000*/-------------------------------------------------------------/* 
@@ -312,7 +311,8 @@
 000000                     AS-MONEY-ROOT      * 
 000000                     WS-RATE-INTEREST   * 
 000000                     WS-DAYS-TERM       / 365                         
-000000         ELSE                                               
+000000         ELSE       
+                   PERFORM EXEC-GET-NONTERM-RATE                                        
 000000             COMPUTE WS-AMOUNT-INTEREST =                      
 000000                     AS-MONEY-ROOT      * 
 000000                     WS-RATE-NONTERM    * 
@@ -407,7 +407,7 @@
 000000*                                          
 000000     EVALUATE SQLCODE                                     
 000000         WHEN 100                                            
-000000             MOVE 'Y'            TO      CST-FLAG-1                             
+000000             MOVE 'Y'            TO      CST-FLAG-1                      
 000000         WHEN 0 
 000000             PERFORM GET-CURRENT-DATE
 000000             PERFORM EXEC-GET-INTEREST-RATE
