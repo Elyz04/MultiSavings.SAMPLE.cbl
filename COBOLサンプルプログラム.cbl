@@ -64,10 +64,13 @@
 000000    03 CST-STATUS-1              PIC X(1)   VALUE '1'.          
 000000    03 CST-STATUS-9              PIC X(1)   VALUE '9'.          
 000000    03 CST-FLAG-1                PIC X(1)   VALUE 'N'.   
-000000    03 CST-NON-TERM              PIC X(10)  VALUE 'NON-TERM'.         
-000000    03 CST-FIXED-03              PIC 9(3)   VALUE 90.  
-000000    03 CST-FIXED-06              PIC 9(3)   VALUE 180.      
-000000    03 CST-FIXED-12              PIC 9(3)   VALUE 365. 
+000000    03 CST-NON-TERM              PIC X(10)  VALUE 'NON-TERM'.
+000000    03 CST-FIXED-03              PIC X(10)  VALUE 'FIXED-03'.
+000000    03 CST-FIXED-06              PIC X(10)  VALUE 'FIXED-06'.
+000000    03 CST-FIXED-12              PIC X(10)  VALUE 'FIXED-12'.        
+000000    03 CST-FIXED-VALUE-03        PIC 9(3)   VALUE 90.  
+000000    03 CST-FIXED-VALUE-06        PIC 9(3)   VALUE 180.      
+000000    03 CST-FIXED-VALUE-12        PIC 9(3)   VALUE 365. 
 000000    03 CST-COUNT-FUNC001         PIC 9(5)   VALUE 0.  
 000000    03 CST-COUNT-FUNC002         PIC 9(5)   VALUE 0.    
 000000*===============================================================*         
@@ -275,16 +278,16 @@
 000000     ELSE                                                   
 000000         IF HV-DAYS-CURRENT >= HV-DAYS-END                    
 000000             EVALUATE DB-SAVING-TYPE                        
-000000                 WHEN 'FIXED-03'                               
-000000                     MOVE CST-FIXED-03 
+000000                 WHEN CST-FIXED-03                               
+000000                     MOVE CST-FIXED-VALUE-03 
 000000                                 TO 
 000000                          WS-DAYS-TERM        
-000000                 WHEN 'FIXED-06'                               
-000000                     MOVE CST-FIXED-06 
+000000                 WHEN CST-FIXED-06                             
+000000                     MOVE CST-FIXED-VALUE-06 
 000000                                 TO 
 000000                          WS-DAYS-TERM        
-000000                 WHEN 'FIXED-12'                               
-000000                     MOVE CST-FIXED-12 
+000000                 WHEN CST-FIXED-12                             
+000000                     MOVE CST-FIXED-VALUE-12 
 000000                                 TO 
 000000                          WS-DAYS-TERM        
 000000             END-EVALUATE                                   
