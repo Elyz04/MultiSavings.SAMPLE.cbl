@@ -64,7 +64,8 @@
 000000 01 CST-VARIABLES.                                                   
 000000    03 CST-STATUS-1              PIC X(01) VALUE '1'.          
 000000    03 CST-STATUS-9              PIC X(01) VALUE '9'.          
-000000    03 CST-FLAG-1                PIC X(01) VALUE 'N'.   
+000000    03 CST-FLAG-1                PIC X(01) VALUE 'N'. 
+000000    03 CST-FLAG-2                PIC X(01) VALUE 'N'.  
 000000    03 CST-NON-TERM              PIC X(10) VALUE 'NON-TERM'.
 000000    03 CST-FIXED-03              PIC X(10) VALUE 'FIXED-03'.
 000000    03 CST-FIXED-06              PIC X(10) VALUE 'FIXED-06'.
@@ -445,7 +446,7 @@
 000000*                                                
 000000     DISPLAY 'FUN_002 : SETTLEMENT'.
 000000*             
-000000     MOVE 'N'                    TO      CST-FLAG-1.
+000000     MOVE 'N'                    TO      CST-FLAG-2.
 000000*                               
 000000     EXEC SQL                                            
 000000         DECLARE C2 CURSOR FOR
@@ -470,7 +471,7 @@
 000000         PERFORM ABEND-PROGRAM                          
 000000     END-IF.                                              
 000000*                                                         
-000000     PERFORM UNTIL CST-FLAG-1 = 'Y'                         
+000000     PERFORM UNTIL CST-FLAG-2 = 'Y'                         
 000000         PERFORM FETCH-SAV-SETTLEMENT                               
 000000     END-PERFORM.                                         
 000000*--- CLOSE CURSOR2                                                    
@@ -498,7 +499,7 @@
 000000*                                          
 000000     EVALUATE SQLCODE                                     
 000000         WHEN 100                                            
-000000             MOVE 'Y'            TO      CST-FLAG-1                      
+000000             MOVE 'Y'            TO      CST-FLAG-2                      
 000000         WHEN 0 
 000000             PERFORM GET-CURR-DATE-FUNC-002
 000000             PERFORM EXEC-GET-INTEREST-RATE
