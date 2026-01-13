@@ -47,7 +47,8 @@
 000000    03 WS-AMOUNT-INTEREST        PIC S9(13)V99    COMP-3.         
 000000    03 WS-AMOUNT-TOTAL           PIC S9(13)V99    COMP-3.  
 000000    03 WS-RATE-INTEREST          PIC S9(01)V9(04) COMP-3.        
-000000    03 WS-RATE-NONTERM           PIC S9(01)V9(04) COMP-3.  
+000000    03 WS-RATE-NONTERM           PIC S9(01)V9(04) COMP-3.
+000000    03 WS-PARAM-JCL              PIC X(01).  
 000000*/-------------------------------------------------------------/*
 000000*  ホスト変数                                                    
 000000*/-------------------------------------------------------------/*     
@@ -75,7 +76,6 @@
 000000    03 CST-FIXED-VALUE-12        PIC 9(03) VALUE 365. 
 000000    03 CST-COUNT-FUNC001         PIC 9(05) VALUE 0.  
 000000    03 CST-COUNT-FUNC002         PIC 9(05) VALUE 0.
-000000    03 CST-PARAM-JCL             PIC X(01) VALUE '0'.
 000000    03 CST-PARAM-1               PIC X(01) VALUE '1'.
 000000    03 CST-PARAM-2               PIC X(01) VALUE '2'.
 000000    03 CST-PARAM-3               PIC X(01) VALUE '3'.
@@ -95,11 +95,11 @@
 000000*    
 000000     IF CST-DEGUG-MODE = 'Y'
 000000         DISPLAY 'PARAMETER RECEIVED FROM JCL : ' 
-000000                                 CST-PARAM-JCL
+000000                                 WS-PARAM-JCL
 000000     END-IF.
 000000*
 000000     PERFORM                     INIT-VARIABLE.
-000000     EVALUATE CST-PARAM-JCL
+000000     EVALUATE WS-PARAM-JCL
 000000         WHEN CST-PARAM-1
 000000             PERFORM             FUNCTION-001
 000000         WHEN CST-PARAM-2
@@ -109,7 +109,7 @@
 000000             PERFORM             FUNCTION-002
 000000         WHEN OTHER
 000000             DISPLAY 'UNKNOWN PARAM : '  
-000000                                 CST-PARAM-JCL
+000000                                 WS-PARAM-JCL
 000000             STOP RUN
 000000     END-EVALUATE. 
 000000*--- デバッグモードが有効な場合のみ、詳細情報を表示する
