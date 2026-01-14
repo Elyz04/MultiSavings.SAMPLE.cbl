@@ -108,10 +108,15 @@
   ACTION(REPLACE)                                                       
   END                                                                   
 /*                  
-//*------------------------------------------------------------*
+//*------------------------------------------------------------*                                             
 //* RUN（プログラム実行）                                               
 //* 内容：作成したロードモジュールをPLAN指定で実行                        
-//* 備考：DB2環境上での実行                                             
+//* 実行結果：SYSOUTにログ出力、RC=0で正常終了                           
+//* 更新データ：DB2テーブル(DB_ACCOUNT_BALANCE,                         
+//*            DB_ACCOUNT_SAVINGS)更新済み                             
+//* SYSOUT参照：SYSPRINT, SYSUDUMPに詳細ログを出力                      
+//* 後処理：一時データセット&&LOADSET,                                 
+//*        &&PLKSETはDISP=(OLD,DELETE)で自動削除                                            
 //*------------------------------------------------------------*
 //RUNSTP   EXEC PGM=IKJEFT01,REGION=0M                                  
 //STEPLIB  DD   DSN=DSN910.DB9G.SDSNEXIT,DISP=SHR                       
@@ -129,12 +134,18 @@
   END                                                                   
 /*     
 //*------------------------------------------------------------*
-//* RUN（プログラム実行）                                               
-//* 内容：作成したロードモジュールをPLAN指定で実行                        
-//* 実行結果：SYSOUTにログ出力、RC=0で正常終了                           
-//* 更新データ：DB2テーブル(DB_ACCOUNT_BALANCE,                         
-//*            DB_ACCOUNT_SAVINGS)更新済み                             
-//* SYSOUT参照：SYSPRINT, SYSUDUMPに詳細ログを出力                      
-//* 後処理：一時データセット&&LOADSET,                                 
-//*        &&PLKSETはDISP=(OLD,DELETE)で自動削除                       
+//* PRINT COBOL SOURCE
+//* 内容：実行に使用したCOBOLソースをSYSOUTへ出力する
+//* 目的：
+//*   ・実行対象ソースの内容をスプールで確認するため
+//*   ・処理ログとの突合・レビュー用
+//* 備考：
+//*   ・IEBGENERを使用してソースをそのまま出力
+//*   ・SYSINはDUMMY指定（制御文なし）
+//*------------------------------------------------------------*
+//PRTSRC   EXEC PGM=IEBGENER
+//SYSUT1   DD   DISP=SHR,DSN=&SRCLIB(&MEMB)
+//SYSUT2   DD   SYSOUT=*
+//SYSPRINT DD   SYSOUT=*
+//SYSIN    DD   DUMMY
 //**************************************************************
