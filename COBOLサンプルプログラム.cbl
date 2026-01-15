@@ -1,8 +1,8 @@
 000000*****************************************************************
 000000 IDENTIFICATION                  DIVISION.                            
-000000 PROGRAM-ID.                     PGM01.  
+000000 PROGRAM-ID.                     PGM001.  
 000000*/-------------------------------------------------------------/*     
-000000*    PROGRAM-ID     :            PGM01                               
+000000*    PROGRAM-ID     :            PGM001                               
 000000*    CREATE DATE    :            2026/01/07                              
 000000*    AUTHOR         :            Elyz04                         
 000000*    PURPOSE        :            利息計算および満期決済処理
@@ -61,7 +61,9 @@
 000000*/-------------------------------------------------------------/*
 000000*  定数定義                                                      
 000000*/-------------------------------------------------------------/*     
-000000 01 CST-VARIABLES.                                                   
+000000 01 CST-VARIABLES.
+000000    03 CST-START-PGM-MSG         PIC X(50) VALUE 'START PROGRAM'.
+000000    03 CST-STOP-PGM-MSG          PIC X(50) VALUE 'STOP PROGRAM'.
 000000    03 CST-STATUS-1              PIC X(01) VALUE '1'.          
 000000    03 CST-STATUS-9              PIC X(01) VALUE '9'.          
 000000    03 CST-FLAG-1                PIC X(01) VALUE 'N'. 
@@ -106,6 +108,7 @@
 000000*
 000000     PERFORM                     INIT-VARIABLE.
 000000*    
+000000     DISPLAY                     CST-START-PGM-MSG.
 000000     IF  LNK-PARAM-DATA NOT   =  CST-PARAM-1
 000000     AND LNK-PARAM-DATA NOT   =  CST-PARAM-2
 000000     AND LNK-PARAM-DATA NOT   =  CST-PARAM-3
@@ -137,6 +140,8 @@
 000000         MOVE 'COMMIT'           TO      CST-ABEND-BREAKPOINT    
 000000         PERFORM ABEND-PROGRAM
 000000     END-IF.
+000000*
+000000     DISPLAY                     CST-STOP-PGM-MSG.
 000000*
 000000     STOP RUN.
 000000*/-------------------------------------------------------------/*         

@@ -3,7 +3,7 @@
 //* 内容：COBOLプログラムのコンパイル、リンク、BIND、実行を行う          
 //* 備考：各ステップはDB2連携のために必要                                
 //*------------------------------------------------------------*
-//(SAMPLEJOB)   JOB (ACCT#),'PGM01',CLASS=A,MSGCLASS=X,                     
+//(SAMPLEJOB)   JOB (ACCT#),'PGM001',CLASS=A,MSGCLASS=X,                     
 //              NOTIFY=&SYSUID                                               
 // SET MEMB=(COBOL_MEMBER)                                                       
 // SET LOAD=(LOAD_DATASET)                                                
@@ -130,7 +130,7 @@
   RUN PROGRAM((COBOL_MEMBER))-
   PARM('3')-                                                   
   PLAN(DF01)-                        
-  LIBRARY ('(LOAD_DATASET)')                                              
+  LIBRARY ('(LOAD_DATASET)')
   END                                                                   
 /*     
 //*------------------------------------------------------------*
@@ -146,6 +146,10 @@
 //PRTSRC   EXEC PGM=IEBGENER
 //SYSUT1   DD   DISP=SHR,DSN=&SRCLIB(&MEMB)
 //SYSUT2   DD   SYSOUT=*
+//*SYSUT2  DD   DSN=&&CBLLOG,DISP=(NEW,PASS),
+//*             UNIT=SYSDA,
+//*             SPACE=(TRK,(5,5)),
+//*             DCB=(RECFM=FB,LRECL=80,BLKSIZE=0)
 //SYSPRINT DD   SYSOUT=*
 //SYSIN    DD   DUMMY
 //**************************************************************
