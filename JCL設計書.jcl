@@ -3,14 +3,14 @@
 //* 内容：COBOLプログラムのコンパイル、リンク、BIND、実行を行う          
 //* 備考：各ステップはDB2連携のために必要                                
 //*------------------------------------------------------------*
-//(SAMPLEJOB)   JOB (ACCT#),'PGM001',CLASS=A,MSGCLASS=X,                     
+//PGM001   JOB (ACCT#),'PGM001',CLASS=A,MSGCLASS=X,                     
 //              NOTIFY=&SYSUID                                               
-// SET MEMB=(COBOL_MEMBER)                                                       
-// SET LOAD=(LOAD_DATASET)                                                
-// SET DBRMLIB=(DBRMLIB_DATASET)                                          
-// SET SRCLIB=(COBOL_DATASET)                                               
+// SET MEMB=PGM001                                                       
+// SET LOAD=XXX.XXX.LOAD                                                
+// SET DBRMLIB=XXX.XXX.DBRMLIB                                          
+// SET SRCLIB=XXX.XXX.CBL                                              
 // SET WSPC=500                                                         
-// SET INCLUDE=(DCLGEN_DATASET)                     
+// SET INCLUDE=XXX.XXX.DCLGEN                     
 //*------------------------------------------------------------*
 //* PRE-COMPILE（DB2プリコンパイル）                                    
 //* 内容：COBOLソース内のEXEC SQL文をプリコンパイルし、DBRMを生成         
@@ -102,7 +102,7 @@
 //SYSTSIN  DD   *                                                       
   DSN SYSTEM(DB9G)                                                      
   BIND PLAN(DF01)-                                                      
-  MEMBER((COBOL_MEMBER))-                      
+  MEMBER(PGM001)-                      
   QUALIFIER(DF)-                                                        
   ENCODING(EBCDIC)-                                                     
   ACTION(REPLACE)                                                       
@@ -127,10 +127,10 @@
 //SYSOUT   DD   SYSOUT=*                                                
 //SYSTSIN  DD   *                                                       
   DSN SYSTEM (DB9G)                                                     
-  RUN PROGRAM((COBOL_MEMBER))-
+  RUN PROGRAM(PGM001)-
   PARM('3,00004002,20261212')-                                                   
   PLAN(DF01)-                        
-  LIBRARY ('(LOAD_DATASET)')
+  LIBRARY ('XXX.XXX.LOAD')
   END                                                                   
 /*     
 //*------------------------------------------------------------*
