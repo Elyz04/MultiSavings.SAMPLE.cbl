@@ -52,9 +52,11 @@
 000000    03 WS-RATE-INTEREST          PIC S9(01)V9(04) COMP-3.        
 000000    03 WS-RATE-NONTERM           PIC S9(01)V9(04) COMP-3.                    
 000000    03 WS-PARAM-FUNC             PIC X(01).               
-000000    03 WS-PARAM-ACCID-CHAR       PIC X(8).   
-000000    03 WS-PARAM-ACCID-DISP       PIC 9(8). 
-000000    03 WS-PARAM-ACCID            PIC S9(8) COMP.  
+000000    03 WS-PARAM-ACCID-CHAR       PIC X(08).   
+000000    03 WS-PARAM-ACCID-DISP       PIC 9(08). 
+000000    03 WS-PARAM-DATE-CHAR        PIC X(08).   
+000000    03 WS-PARAM-DATE-CURRENT     PIC 9(08).  
+000000    03 WS-PARAM-ACCID            PIC S9(08)       COMP. 
 000000*/-------------------------------------------------------------/*
 000000*  ホスト変数                                                    
 000000*/-------------------------------------------------------------/*     
@@ -63,40 +65,42 @@
 000000    03 HV-DAYS-START-COMP        PIC S9(09) COMP.               
 000000    03 HV-DAYS-END-COMP          PIC S9(09) COMP.                 
 000000    03 HV-DATE-START-9           PIC 9(08).                    
-000000    03 HV-DATE-END-9             PIC 9(08).                     
-000000    03 HV-DATE-CURRENT-X         PIC X(21).                    
-000000    03 HV-DATE-CURRENT-9         PIC 9(08).                            
+000000    03 HV-DATE-END-9             PIC 9(08).                                        
+000000    03 HV-DATE-CURRENT-9         PIC 9(08). 
+000000    03 HV-ACC-STATUS             PIC X(01).
+000000    03 HV-ACTIVE-SAVING-CNT      PIC S9(09) COMP.                           
 000000*/-------------------------------------------------------------/*
 000000*  定数定義                                                      
 000000*/-------------------------------------------------------------/*     
 000000 01 CST-VARIABLES.
-000000    03 CST-START-PGM-MSG         PIC X(12) VALUE 'START PGM001'.
-000000    03 CST-STOP-PGM-MSG          PIC X(11) VALUE 'STOP PGM001'.
-000000    03 CST-DONE-FNC001-MSG       PIC X(13) VALUE 'DONE FUNC_001'.
-000000    03 CST-DONE-FNC002-MSG       PIC X(13) VALUE 'DONE FUNC_002'.
-000000    03 CST-STATUS-1              PIC X(01) VALUE '1'.          
-000000    03 CST-STATUS-9              PIC X(01) VALUE '9'.          
-000000    03 CST-EOF-CRS1              PIC X(01) VALUE 'N'. 
-000000    03 CST-EOF-CRS2              PIC X(01) VALUE 'N'.  
-000000    03 CST-NON-TERM              PIC X(10) VALUE 'NON-TERM'.
-000000    03 CST-FIXED-03              PIC X(10) VALUE 'FIXED-03'.
-000000    03 CST-FIXED-06              PIC X(10) VALUE 'FIXED-06'.
-000000    03 CST-FIXED-12              PIC X(10) VALUE 'FIXED-12'.        
-000000    03 CST-FIXED-VALUE-03        PIC 9(03) VALUE 90.  
-000000    03 CST-FIXED-VALUE-06        PIC 9(03) VALUE 180.      
-000000    03 CST-FIXED-VALUE-12        PIC 9(03) VALUE 365. 
-000000    03 CST-COUNT-FUNC001         PIC 9(05) VALUE 0.
-000000    03 CST-COUNT-UPD-BALANCE     PIC 9(05) VALUE 0.
-000000    03 CST-COUNT-UPD-STATUS      PIC 9(05) VALUE 0.  
-000000    03 CST-COUNT-FUNC002         PIC 9(05) VALUE 0.
-000000    03 CST-ACCID-FLAG            PIC S9(1) COMP VALUE 0.
-000000    03 CST-PARAM-1               PIC X(01) VALUE '1'.
-000000    03 CST-PARAM-2               PIC X(01) VALUE '2'.
-000000    03 CST-PARAM-3               PIC X(01) VALUE '3'.
+000000    03 CST-START-PGM-MSG         PIC X(12)  VALUE 'START PGM001'.
+000000    03 CST-STOP-PGM-MSG          PIC X(11)  VALUE 'STOP PGM001'.
+000000    03 CST-DONE-FNC001-MSG       PIC X(13)  VALUE 'DONE FUNC_001'.
+000000    03 CST-DONE-FNC002-MSG       PIC X(13)  VALUE 'DONE FUNC_002'.
+000000    03 CST-STATUS-1              PIC X(01)  VALUE '1'.          
+000000    03 CST-STATUS-9              PIC X(01)  VALUE '9'.          
+000000    03 CST-EOF-CRS1              PIC X(01)  VALUE 'N'. 
+000000    03 CST-EOF-CRS2              PIC X(01)  VALUE 'N'.  
+000000    03 CST-NON-TERM              PIC X(10)  VALUE 'NON-TERM'.
+000000    03 CST-FIXED-03              PIC X(10)  VALUE 'FIXED-03'.
+000000    03 CST-FIXED-06              PIC X(10)  VALUE 'FIXED-06'.
+000000    03 CST-FIXED-12              PIC X(10)  VALUE 'FIXED-12'.        
+000000    03 CST-FIXED-VALUE-03        PIC 9(03)  VALUE 90.  
+000000    03 CST-FIXED-VALUE-06        PIC 9(03)  VALUE 180.      
+000000    03 CST-FIXED-VALUE-12        PIC 9(03)  VALUE 365.
+000000    03 CST-MAX-DATE              PIC 9(08)  VALUE 99991231. 
+000000    03 CST-COUNT-FUNC001         PIC 9(05)  VALUE 0.
+000000    03 CST-COUNT-UPD-BALANCE     PIC 9(05)  VALUE 0.
+000000    03 CST-COUNT-UPD-STATUS      PIC 9(05)  VALUE 0.  
+000000    03 CST-COUNT-FUNC002         PIC 9(05)  VALUE 0.
+000000    03 CST-ACCID-FLAG            PIC S9(01) COMP VALUE 0.
+000000    03 CST-PARAM-1               PIC X(01)  VALUE '1'.
+000000    03 CST-PARAM-2               PIC X(01)  VALUE '2'.
+000000    03 CST-PARAM-3               PIC X(01)  VALUE '3'.
 000000*--- DEBUG / ABEND 処理  
 000000    03 CST-ABEND-BREAKPOINT      PIC X(100) VALUE SPACES.
 000000    03 CST-ABEND-DETAIL          PIC X(100) VALUE SPACES.  
-000000    03 CST-DEBUG-MODE            PIC X(1)   VALUE 'N'.
+000000    03 CST-DEBUG-MODE            PIC X(01)  VALUE 'N'.
 000000*/-------------------------------------------------------------/*
 000000*  JCL パラメータ受け取りエリア                                                     
 000000*/-------------------------------------------------------------/* 
@@ -155,11 +159,12 @@
 000000*                                |                                       
 000000*/-------------------------------------------------------------/*
 000000 HANDLE-JCL-PARAM.
-000000*
+000000*--- (X,YYYYYYYY,ZZZZZZZZ)
 000000     UNSTRING LNK-PARAM-DATA     
 000000         DELIMITED BY ','        
 000000         INTO WS-PARAM-FUNC      
 000000              WS-PARAM-ACCID-CHAR
+000000              WS-PARAM-DATE-CHAR
 000000     END-UNSTRING.
 000000*
 000000     PERFORM VALIDATE-JCL-PARAM.
@@ -177,6 +182,20 @@
 000000              WS-PARAM-ACCID       
 000000     END-IF.                                              
 000000*
+000000     IF WS-PARAM-DATE-CHAR = SPACES          
+000000         MOVE FUNCTION CURRENT-DATE(1:8)  
+000000                                 TO 
+000000                       WS-PARAM-DATE-CURRENT             
+000000     ELSE                                 
+000000         MOVE WS-PARAM-DATE-CHAR             
+000000                                 TO 
+000000              WS-PARAM-DATE-CURRENT              
+000000     END-IF.
+000000*---
+000000     IF CST-ACCID-FLAG = 1
+000000         PERFORM CHECK-ACCID-STATUS
+000000     END-IF. 
+000000*---                             
 000000     EVALUATE WS-PARAM-FUNC
 000000         WHEN CST-PARAM-1
 000000             DISPLAY 'START FUN_001 : CALCULATE_INTEREST'
@@ -194,38 +213,125 @@
 000000             PERFORM             FUNCTION-002
 000000             DISPLAY CST-DONE-FNC002-MSG
 000000     END-EVALUATE. 
+000000*---
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
-000000*                                | NOTE: 利息計算                         
-000000* VALIDATE-JCL-PARAM     SECTION |      （FUN_001)                        
+000000*                                | NOTE: 呼び出し処理モジュール                         
+000000* VALIDATE-JCL-PARAM     SECTION |      （COMMON)                        
 000000*                                |                                      
 000000*/-------------------------------------------------------------/*
 000000 VALIDATE-JCL-PARAM.
 000000*
-000000     IF CST-DEBUG-MODE = 'Y'
-000000         DISPLAY 'LNK-PARAM-DATA RECEIVED FROM JCL : ' 
-000000                 LNK-PARAM-DATA
-000000     END-IF.
+000000     PERFORM VALIDATE-FUNC-PARAM
+000000     PERFORM VALIDATE-ACCID-PARAM
+000000     PERFORM VALIDATE-DATE-PARAM
+000000*
+000000     EXIT.
+000000*/-------------------------------------------------------------/*         
+000000*                                | NOTE: チェック機能値                         
+000000* VALIDATE-FUNC-PARAM    SECTION |      （COMMON)                        
+000000*                                |                                      
+000000*/-------------------------------------------------------------/*
+000000 VALIDATE-FUNC-PARAM.
+000000*--- DEFAULT FUNCTION
 000000     IF WS-PARAM-FUNC = SPACES
 000000         MOVE CST-PARAM-3        TO      WS-PARAM-FUNC
 000000     END-IF.
-000000*
+000000*--- CHECK VALUE
 000000     IF  WS-PARAM-FUNC NOT = CST-PARAM-1
 000000     AND WS-PARAM-FUNC NOT = CST-PARAM-2
 000000     AND WS-PARAM-FUNC NOT = CST-PARAM-3
-000000         DISPLAY 'FUNCTION PARAM IS INVALID : ' 
+000000         DISPLAY 'FUNCTION PARAM IS INVALID : '
 000000                 WS-PARAM-FUNC
 000000         STOP RUN
 000000     END-IF.
-000000*           
+000000     EXIT.
+000000*/-------------------------------------------------------------/*         
+000000*                                | NOTE: ACC_ID 値を確認してください                         
+000000* VALIDATE-ACCID-PARAM   SECTION |      （COMMON)                        
+000000*                                |                                      
+000000*/-------------------------------------------------------------/*
+000000 VALIDATE-ACCID-PARAM.
+000000*--- ACC_ID FORMAT CHECK
 000000     IF WS-PARAM-ACCID-CHAR NOT = SPACES
 000000         IF WS-PARAM-ACCID-CHAR IS NOT NUMERIC
-000000             DISPLAY 'ACC_ID PARAM IS NOT NUMERIC : ' 
+000000             DISPLAY 'ACC_ID PARAM IS NOT NUMERIC : '
 000000                     WS-PARAM-ACCID-CHAR
 000000             STOP RUN
 000000         END-IF
 000000     END-IF.
-000000*         
+000000     EXIT.
+000000*/-------------------------------------------------------------/*         
+000000*                                | NOTE: 受信した日付値を確認する                         
+000000* VALIDATE-DATE-PARAM    SECTION |      （COMMON)                        
+000000*                                |                                      
+000000*/-------------------------------------------------------------/*
+000000 VALIDATE-DATE-PARAM.
+000000*--- CURRENT_DATE
+000000     IF WS-PARAM-DATE-CHAR NOT = SPACES
+000000         IF WS-PARAM-DATE-CHAR IS NOT NUMERIC
+000000             DISPLAY 'DATE PARAM IS NOT NUMERIC : '
+000000                     WS-PARAM-DATE-CHAR
+000000             STOP RUN
+000000         END-IF
+000000         IF WS-PARAM-DATE-CHAR > CST-MAX-DATE
+000000             DISPLAY 'INVALID DATE RANGE : '
+000000                     WS-PARAM-DATE-CHAR
+000000             STOP RUN
+000000         END-IF
+000000         MOVE WS-PARAM-DATE-CHAR TO HV-DATE-START-9
+000000         COMPUTE HV-DAYS-START-COMP =
+000000             FUNCTION INTEGER-OF-DATE(HV-DATE-START-9)
+000000         MOVE FUNCTION CURRENT-DATE(1:8)
+000000             TO HV-DATE-CURRENT-9
+000000         COMPUTE HV-DAYS-CURRENT-COMP =
+000000             FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9)
+000000         IF HV-DAYS-START-COMP < HV-DAYS-CURRENT-COMP
+000000             DISPLAY 'INVALID DATE (PAST) : '
+000000                     WS-PARAM-DATE-CHAR
+000000             STOP RUN
+000000         END-IF
+000000     END-IF.
+000000     EXIT.
+000000*/-------------------------------------------------------------/*         
+000000*                                | NOTE: ACC_IDを確認してください                       
+000000* CHECK-ACCID-STATUS     SECTION |      （COMMON）                        
+000000*                                |                                       
+000000*/-------------------------------------------------------------/*
+000000 CHECK-ACCID-STATUS.
+000000*
+000000     EXEC SQL
+000000         SELECT COUNT(*)
+000000         INTO   :HV-ACTIVE-SAVING-CNT
+000000         FROM   MYDB.DB_ACCOUNT_SAVINGS
+000000         WHERE  ACC_ID = :WS-PARAM-ACCID
+000000         AND    STATUS = :CST-STATUS-1
+000000     END-EXEC.
+000000*
+000000     IF SQLCODE = 100
+000000         DISPLAY 'ACC_ID ' 
+000000                 WS-PARAM-ACCID
+000000                 'NOT FOUND'
+000000         STOP RUN
+000000     ELSE
+000000         IF SQLCODE NOT = 0
+000000             MOVE 'CHECK-ACCID-STATUS'
+000000                                 TO 
+000000                  CST-ABEND-BREAKPOINT
+000000             MOVE 'SELECT STATUS FAILED'
+000000                                 TO 
+000000                  CST-ABEND-DETAIL
+000000             PERFORM ABEND-PROGRAM
+000000         END-IF
+000000     END-IF.
+000000*
+000000     IF HV-ACTIVE-SAVING-CNT = 0
+000000         DISPLAY 'ACC_ID '
+000000                 WS-PARAM-ACCID
+000000                 ' HAS BEEN FULLY SETTLED'
+000000         STOP RUN
+000000     END-IF.
+000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 利息計算                         
@@ -380,14 +486,8 @@
 000000*                                |                                      
 000000*/-------------------------------------------------------------/* 
 000000 GET-CURR-DATE-FUN001.
-000000*--- GET SYSTEM CURRENT DATE YYYYMMDDHHMMSSCC±HHMM (21)
-000000     MOVE FUNCTION CURRENT-DATE
-000000                                 TO 
-000000                   HV-DATE-CURRENT-X.
-000000*--- EXTRACT DATE PART YYYYMMDD (8)
-000000     MOVE HV-DATE-CURRENT-X(1:8)
-000000                                 TO 
-000000          HV-DATE-CURRENT-9.
+000000*--- 
+000000     MOVE WS-PARAM-DATE-CURRENT  TO      HV-DATE-CURRENT-9
 000000*--- CONVERT CURRENT DATE TO INTEGER DAYS
 000000     COMPUTE HV-DAYS-CURRENT-COMP =
 000000         FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9).
@@ -411,14 +511,8 @@
 000000*                                |                                      
 000000*/-------------------------------------------------------------/* 
 000000 GET-CURR-DATE-FUN002.
-000000*--- GET SYSTEM CURRENT DATE YYYYMMDDHHMMSSCC±HHMM (21)
-000000     MOVE FUNCTION CURRENT-DATE
-000000                                 TO 
-000000                   HV-DATE-CURRENT-X.
-000000*--- EXTRACT DATE PART YYYYMMDD (8)
-000000     MOVE HV-DATE-CURRENT-X(1:8)
-000000                                 TO 
-000000          HV-DATE-CURRENT-9.
+000000*--- 
+000000     MOVE WS-PARAM-DATE-CURRENT  TO      HV-DATE-CURRENT-9
 000000*--- CONVERT CURRENT DATE TO INTEGER DAYS
 000000     COMPUTE HV-DAYS-CURRENT-COMP =
 000000         FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9).
@@ -539,7 +633,8 @@
 000000         COMPUTE WS-AMOUNT-INTEREST     =                             
 000000                 AS-MONEY-ROOT          * 
 000000                 WS-RATE-INTEREST       * 
-000000                 WS-DAYS-ACTUAL         / CST-FIXED-VALUE-12
+000000                 WS-DAYS-ACTUAL         / 
+000000                 CST-FIXED-VALUE-12
 000000*--- 定期口座（90日／180日／365日）の処理     
 000000     ELSE                                                   
 000000         IF HV-DAYS-CURRENT-COMP >= HV-DAYS-END-COMP                    
@@ -720,14 +815,14 @@
 000000 DISPLAY-TOTAL.
 000000*    
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-001 : ' 
-000000     CST-COUNT-FUNC001.
+000000             CST-COUNT-FUNC001.
 000000*
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-002 : ' 
-000000     CST-COUNT-FUNC002.
+000000             CST-COUNT-FUNC002.
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED BALANCE           : '
-000000     CST-COUNT-UPD-BALANCE.
+000000             CST-COUNT-UPD-BALANCE.
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED SAVING STATUS     : '
-000000     CST-COUNT-UPD-STATUS.
+000000             CST-COUNT-UPD-STATUS.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
