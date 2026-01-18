@@ -94,7 +94,7 @@
 000000 LINKAGE                         SECTION.
 000000 01 LNK-PARAM-JCL.
 000000    03 LNK-PARAM-LENGHT          PIC S9(04) COMP.
-000000    03 LNK-PARAM-DATA            PIC X(1).   
+000000    03 LNK-PARAM-DATA            PIC X(50).   
 000000*===============================================================*         
 000000*====        ＰＲＯＣＥＤＵＲＥ　　 　　ＤＩＶＩＳＩＯＮ        ====*         
 000000*===============================================================*       
@@ -178,7 +178,7 @@
 000000     MOVE 'N'                    TO     CST-FLAG-1.
 000000* 
 000000     EXEC SQL                                             
-000000         DECLARE C1 CURSOR FOR                          
+000000         DECLARE CRS1 CURSOR FOR                          
 000000         SELECT  ORDER_ID,                                 
 000000                 ACC_ID,                                   
 000000                 SAVING_TYPE,                              
@@ -189,7 +189,7 @@
 000000     END-EXEC. 
 000000*--- OPEN CURSOR1                             
 000000     EXEC SQL                                                
-000000         OPEN C1                                           
+000000         OPEN CRS1                                           
 000000     END-EXEC.
 000000*---                                      
 000000     IF SQLCODE = 0
@@ -203,7 +203,7 @@
 000000     END-PERFORM.                                            
 000000*--- CLOSE CURSOR1                                                        
 000000     EXEC SQL                                                
-000000         CLOSE C1                                          
+000000         CLOSE CRS1                                          
 000000     END-EXEC.
 000000*---      
 000000     EXIT.                                                   
@@ -217,7 +217,7 @@
 000000     MOVE 'N'                    TO      CST-FLAG-2.
 000000*                               
 000000     EXEC SQL                                            
-000000         DECLARE C2 CURSOR FOR
+000000         DECLARE CRS2 CURSOR FOR
 000000         SELECT  ORDER_ID,
 000000                 ACC_ID,
 000000                 SAVING_TYPE,
@@ -229,7 +229,7 @@
 000000     END-EXEC.                                            
 000000*--- OPEN-CURSOR-2                                                
 000000     EXEC SQL                                             
-000000         OPEN C2                                        
+000000         OPEN CRS2                                        
 000000     END-EXEC.
 000000*---                                                               
 000000     IF SQLCODE = 0
@@ -244,7 +244,7 @@
 000000     END-PERFORM.                                         
 000000*--- CLOSE CURSOR2                                                    
 000000     EXEC SQL                                             
-000000         CLOSE C2                                       
+000000         CLOSE CRS2                                       
 000000     END-EXEC.                                            
 000000*---      
 000000     EXIT. 
@@ -256,7 +256,7 @@
 000000 FETCH-AND-CALCULATE.
 000000*                                                 
 000000     EXEC SQL                                                    
-000000         FETCH C1                                            
+000000         FETCH CRS1                                            
 000000         INTO  :AS-ORDER-ID,                                    
 000000               :AS-ACC-ID,                                      
 000000               :AS-SAVING-TYPE,                                 
@@ -489,7 +489,7 @@
 000000 FETCH-SAV-SETTLEMENT.                                              
 000000*  
 000000     EXEC SQL                                             
-000000         FETCH C2                                       
+000000         FETCH CRS2                                       
 000000         INTO  :AS-ORDER-ID,                               
 000000               :AS-ACC-ID,                                 
 000000               :AS-SAVING-TYPE,
