@@ -17,6 +17,8 @@
 000000*                     ます。エラーを明確に説明します。
 000000*        2026/01/18 : 送信入力ACCIDを更新、1アカウントの決済のみ処理、
 000000*                     送信入力検証パラメータを追加
+000000*        2026/01/20 : ACC_ID が存在しないことを検証するケースの再構
+000000*                     築と修正
 000000*/-------------------------------------------------------------/*
 000000 ENVIRONMENT                     DIVISION.         
 000000 DATA                            DIVISION.                                
@@ -93,7 +95,7 @@
 000000    03 CST-COUNT-UPD-BALANCE     PIC 9(05)  VALUE 0.
 000000    03 CST-COUNT-UPD-STATUS      PIC 9(05)  VALUE 0.  
 000000    03 CST-COUNT-FUNC002         PIC 9(05)  VALUE 0.
-000000    03 CST-ACCID-FLAG            PIC S9(01) COMP VALUE 0.
+000000    03 CST-ACCID-FLAG            PIC X(01)  VALUE 'N'.
 000000    03 CST-PARAM-1               PIC X(01)  VALUE '1'.
 000000    03 CST-PARAM-2               PIC X(01)  VALUE '2'.
 000000    03 CST-PARAM-3               PIC X(01)  VALUE '3'.
@@ -126,18 +128,8 @@
 000000     IF CST-DEBUG-MODE = 'Y'
 000000         PERFORM                 DISPLAY-TOTAL
 000000     END-IF.
-000000*--- COMMIT 
-000000     EXEC SQL
-000000         COMMIT
-000000     END-EXEC.
-000000*---
-000000     IF SQLCODE = 0
-000000         CONTINUE          
-000000     ELSE
-000000         MOVE 'MAIN'             TO      CST-ABEND-BREAKPOINT
-000000         MOVE 'COMMIT FAILED'    TO      CST-ABEND-DETAIL    
-000000         PERFORM ABEND-PROGRAM
-000000     END-IF.
+000000*
+000000     PERFORM                     COMMIT-DATA.
 000000*
 000000     DISPLAY                     CST-STOP-PGM-MSG.
 000000*
@@ -167,13 +159,12 @@
 000000              WS-PARAM-DATE-CHAR
 000000     END-UNSTRING.
 000000*
-000000     PERFORM VALIDATE-JCL-PARAM.
-000000*
-000000     IF WS-PARAM-ACCID-CHAR = SPACES                      
+000000     IF WS-PARAM-ACCID-CHAR = SPACES
+000000     OR WS-PARAM-ACCID-CHAR = LOW-VALUES                      
 000000         DISPLAY 'ACCOUNT ID PARAM IS REQUIRED'
 000000         STOP RUN                        
 000000     ELSE                                                 
-000000         MOVE 1                  TO      CST-ACCID-FLAG                          
+000000         MOVE 'Y'                TO      CST-ACCID-FLAG                          
 000000         MOVE WS-PARAM-ACCID-CHAR
 000000                                 TO 
 000000              WS-PARAM-ACCID-DISP  
@@ -181,6 +172,8 @@
 000000                                 TO 
 000000              WS-PARAM-ACCID       
 000000     END-IF.                                              
+000000*
+000000     PERFORM VALIDATE-JCL-PARAM.
 000000*
 000000     IF WS-PARAM-DATE-CHAR = SPACES          
 000000         MOVE FUNCTION CURRENT-DATE(1:8)  
@@ -192,7 +185,7 @@
 000000              WS-PARAM-DATE-CURRENT              
 000000     END-IF.
 000000*---
-000000     IF CST-ACCID-FLAG = 1
+000000     IF CST-ACCID-FLAG = 'Y'
 000000         PERFORM CHECK-ACCID-STATUS
 000000     END-IF. 
 000000*---                             
@@ -775,6 +768,26 @@
 000000         PERFORM ABEND-PROGRAM                                   
 000000     END-IF.
 000000*                                                         
+000000     EXIT.
+000000*/-------------------------------------------------------------/*         
+000000*                                | NOTE: データのコミット                     
+000000* COMMIT                 SECTION |      （COMMON）                      
+000000*                                |                                      
+000000*/-------------------------------------------------------------/*     
+000000 COMMIT-DATA.
+000000*--- COMMIT 
+000000     EXEC SQL
+000000         COMMIT
+000000     END-EXEC.
+000000*---
+000000     IF SQLCODE = 0
+000000         CONTINUE          
+000000     ELSE
+000000         MOVE 'COMMIT-DATA'      TO      CST-ABEND-BREAKPOINT
+000000         MOVE 'COMMIT FAILED'    TO      CST-ABEND-DETAIL    
+000000         PERFORM ABEND-PROGRAM
+000000     END-IF.
+000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 利息・決済明細表示                
