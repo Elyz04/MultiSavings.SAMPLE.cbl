@@ -51,12 +51,12 @@
 000000    03 WS-AMOUNT-TOTAL           PIC S9(13)V99    COMP-3.  
 000000    03 WS-RATE-INTEREST          PIC S9(01)V9(04) COMP-3.        
 000000    03 WS-RATE-NONTERM           PIC S9(01)V9(04) COMP-3.                    
-000000    03 WS-PARAM-FUNC             PIC X(01).               
-000000    03 WS-PARAM-ACCID-CHAR       PIC X(08).   
-000000    03 WS-PARAM-ACCID-DISP       PIC 9(08). 
+000000    03 WS-PARAM-FUNC             PIC X(01).             
+000000    03 WS-PARAM-ACCID-CHAR       PIC X(09).   
+000000    03 WS-PARAM-ACCID-DISP       PIC 9(09). 
+000000    03 WS-PARAM-ACCID            PIC S9(09)       COMP. 
 000000    03 WS-PARAM-DATE-CHAR        PIC X(08).   
 000000    03 WS-PARAM-DATE-CURRENT     PIC 9(08).  
-000000    03 WS-PARAM-ACCID            PIC S9(08)       COMP. 
 000000*/-------------------------------------------------------------/*
 000000*  ホスト変数                                                    
 000000*/-------------------------------------------------------------/*     
@@ -68,7 +68,8 @@
 000000    03 HV-DATE-END-9             PIC 9(08).                                        
 000000    03 HV-DATE-CURRENT-9         PIC 9(08). 
 000000    03 HV-ACC-STATUS             PIC X(01).
-000000    03 HV-ACTIVE-SAVING-CNT      PIC S9(09) COMP.                           
+000000    03 HV-ACTIVE-SAVING-CNT      PIC S9(09) COMP.
+000000    03 HV-TOTAL-SAVING-CNT       PIC S9(09) COMP.                           
 000000*/-------------------------------------------------------------/*
 000000*  定数定義                                                      
 000000*/-------------------------------------------------------------/*     
@@ -88,7 +89,6 @@
 000000    03 CST-FIXED-VALUE-03        PIC 9(03)  VALUE 90.  
 000000    03 CST-FIXED-VALUE-06        PIC 9(03)  VALUE 180.      
 000000    03 CST-FIXED-VALUE-12        PIC 9(03)  VALUE 365.
-000000    03 CST-MAX-DATE              PIC 9(08)  VALUE 99991231. 
 000000    03 CST-COUNT-FUNC001         PIC 9(05)  VALUE 0.
 000000    03 CST-COUNT-UPD-BALANCE     PIC 9(05)  VALUE 0.
 000000    03 CST-COUNT-UPD-STATUS      PIC 9(05)  VALUE 0.  
@@ -170,8 +170,8 @@
 000000     PERFORM VALIDATE-JCL-PARAM.
 000000*
 000000     IF WS-PARAM-ACCID-CHAR = SPACES                      
-000000         MOVE 0                  TO      CST-ACCID-FLAG                          
-000000         MOVE 0                  TO      WS-PARAM-ACCID                         
+000000         DISPLAY 'ACCOUNT ID PARAM IS REQUIRED'
+000000         STOP RUN                        
 000000     ELSE                                                 
 000000         MOVE 1                  TO      CST-ACCID-FLAG                          
 000000         MOVE WS-PARAM-ACCID-CHAR
@@ -274,11 +274,6 @@
 000000                     WS-PARAM-DATE-CHAR
 000000             STOP RUN
 000000         END-IF
-000000         IF WS-PARAM-DATE-CHAR > CST-MAX-DATE
-000000             DISPLAY 'INVALID DATE RANGE : '
-000000                     WS-PARAM-DATE-CHAR
-000000             STOP RUN
-000000         END-IF
 000000         MOVE WS-PARAM-DATE-CHAR TO HV-DATE-START-9
 000000         COMPUTE HV-DAYS-START-COMP =
 000000             FUNCTION INTEGER-OF-DATE(HV-DATE-START-9)
@@ -287,7 +282,7 @@
 000000         COMPUTE HV-DAYS-CURRENT-COMP =
 000000             FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9)
 000000         IF HV-DAYS-START-COMP < HV-DAYS-CURRENT-COMP
-000000             DISPLAY 'INVALID DATE (PAST) : '
+000000             DISPLAY 'INVALID DATE PARAM (PAST DATE) : '
 000000                     WS-PARAM-DATE-CHAR
 000000             STOP RUN
 000000         END-IF
@@ -302,29 +297,41 @@
 000000*
 000000     EXEC SQL
 000000         SELECT COUNT(*)
+000000         INTO   :HV-TOTAL-SAVING-CNT
+000000         FROM   MYDB.DB_ACCOUNT_SAVINGS
+000000         WHERE  ACC_ID = :WS-PARAM-ACCID
+000000     END-EXEC.
+000000     IF SQLCODE NOT = 0
+000000         MOVE 'CHECK-ACCID-STATUS'
+000000                                 TO 
+000000              CST-ABEND-BREAKPOINT
+000000         MOVE 'SELECT ACC_ID EXIST FAILED'
+000000                                 TO 
+000000              CST-ABEND-DETAIL
+000000         PERFORM ABEND-PROGRAM
+000000     END-IF.
+000000     IF HV-TOTAL-SAVING-CNT = 0
+000000         DISPLAY 'ACC_ID '
+000000                 WS-PARAM-ACCID
+000000                 ' NOT FOUND'
+000000         STOP RUN
+000000     END-IF.
+000000     EXEC SQL
+000000         SELECT COUNT(*)
 000000         INTO   :HV-ACTIVE-SAVING-CNT
 000000         FROM   MYDB.DB_ACCOUNT_SAVINGS
 000000         WHERE  ACC_ID = :WS-PARAM-ACCID
 000000         AND    STATUS = :CST-STATUS-1
 000000     END-EXEC.
-000000*
-000000     IF SQLCODE = 100
-000000         DISPLAY 'ACC_ID ' 
-000000                 WS-PARAM-ACCID
-000000                 'NOT FOUND'
-000000         STOP RUN
-000000     ELSE
-000000         IF SQLCODE NOT = 0
-000000             MOVE 'CHECK-ACCID-STATUS'
+000000     IF SQLCODE NOT = 0
+000000         MOVE 'CHECK-ACCID-STATUS'
 000000                                 TO 
-000000                  CST-ABEND-BREAKPOINT
-000000             MOVE 'SELECT STATUS FAILED'
+000000              CST-ABEND-BREAKPOINT
+000000         MOVE 'SELECT ACTIVE SAVING FAILED'
 000000                                 TO 
-000000                  CST-ABEND-DETAIL
-000000             PERFORM ABEND-PROGRAM
-000000         END-IF
+000000              CST-ABEND-DETAIL
+000000         PERFORM ABEND-PROGRAM
 000000     END-IF.
-000000*
 000000     IF HV-ACTIVE-SAVING-CNT = 0
 000000         DISPLAY 'ACC_ID '
 000000                 WS-PARAM-ACCID
@@ -351,8 +358,7 @@
 000000                 MONEY_ROOT                             
 000000         FROM    MYDB.DB_ACCOUNT_SAVINGS                     
 000000         WHERE   STATUS = :CST-STATUS-1
-000000         AND     ( :WS-PARAM-ACCID = 0
-000000         OR      ACC_ID = :WS-PARAM-ACCID ) 
+000000         AND     ACC_ID = :WS-PARAM-ACCID
 000000     END-EXEC. 
 000000*--- OPEN CURSOR1                             
 000000     EXEC SQL                                                
@@ -405,8 +411,7 @@
 000000                 MONEY_ROOT
 000000         FROM    MYDB.DB_ACCOUNT_SAVINGS  
 000000         WHERE   STATUS = :CST-STATUS-1
-000000         AND     ( :WS-PARAM-ACCID = 0
-000000         OR      ACC_ID = :WS-PARAM-ACCID )                 
+000000         AND     ACC_ID = :WS-PARAM-ACCID              
 000000     END-EXEC.                                            
 000000*--- OPEN-CURSOR-2                                                
 000000     EXEC SQL                                             
@@ -780,13 +785,19 @@
 000000 DISPLAY-DETAIL-FUN001.
 000000*
 000000     DISPLAY 'OUTPUT FUNCTION-001 : INTEREST CALCULATION'.
-000000     DISPLAY 'ORDER_ID    : ' AS-ORDER-ID.
-000000     DISPLAY 'ACC_ID      : ' AS-ACC-ID.
-000000     DISPLAY 'SAVING_TYPE : ' AS-SAVING-TYPE.
-000000     DISPLAY 'MONEY_ROOT  : ' AS-MONEY-ROOT.
-000000     DISPLAY 'INTEREST    : ' WS-AMOUNT-INTEREST.
-000000     DISPLAY 'TOTAL       : ' WS-AMOUNT-TOTAL.
-000000     DISPLAY 'STATUS      : ' CST-STATUS-1.
+000000     DISPLAY 'ORDER_ID           : ' AS-ORDER-ID.
+000000     DISPLAY 'ACC_ID             : ' AS-ACC-ID.
+000000     DISPLAY 'SAVING_TYPE        : ' AS-SAVING-TYPE.
+000000     DISPLAY 'MONEY_ROOT         : ' AS-MONEY-ROOT.
+000000     DISPLAY 'INTEREST           : ' WS-AMOUNT-INTEREST.
+000000     DISPLAY 'TOTAL              : ' WS-AMOUNT-TOTAL.
+000000     DISPLAY 'STATUS             : ' CST-STATUS-1.
+000000     DISPLAY 'START_DATE(DB)     : ' AS-START-DATE.
+000000     DISPLAY 'CURRENT_DATE(PARAM): ' WS-PARAM-DATE-CURRENT.
+000000     DISPLAY 'START_DATE(INT)    : ' HV-DAYS-START-COMP.
+000000     DISPLAY 'CURRENT_DATE(INT)  : ' HV-DAYS-CURRENT-COMP.
+000000     DISPLAY 'ACTUAL_DAYS        : ' WS-DAYS-ACTUAL.
+000000     DISPLAY 'INTEREST_RATE      : ' WS-RATE-INTEREST.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -798,13 +809,23 @@
 000000 DISPLAY-DETAIL-FUN002.
 000000*
 000000     DISPLAY 'OUTPUT FUNCTION-002 : SETTLEMENT'.
-000000     DISPLAY 'ORDER_ID    : ' AS-ORDER-ID.
-000000     DISPLAY 'ACC_ID      : ' AB-ACC-ID.
-000000     DISPLAY 'SAVING_TYPE : ' AS-SAVING-TYPE.
-000000     DISPLAY 'MONEY_ROOT  : ' AS-MONEY-ROOT.
-000000     DISPLAY 'INTEREST    : ' WS-AMOUNT-INTEREST.
-000000     DISPLAY 'TOTAL       : ' WS-AMOUNT-TOTAL.
-000000     DISPLAY 'STATUS      : ' CST-STATUS-9.
+000000     DISPLAY 'ORDER_ID           : ' AS-ORDER-ID.
+000000     DISPLAY 'ACC_ID             : ' AB-ACC-ID.
+000000     DISPLAY 'SAVING_TYPE        : ' AS-SAVING-TYPE.
+000000     DISPLAY 'MONEY_ROOT         : ' AS-MONEY-ROOT.
+000000     DISPLAY 'INTEREST           : ' WS-AMOUNT-INTEREST.
+000000     DISPLAY 'TOTAL              : ' WS-AMOUNT-TOTAL.
+000000     DISPLAY 'STATUS             : ' CST-STATUS-9.
+000000     DISPLAY 'START_DATE(DB)     : ' AS-START-DATE.
+000000     DISPLAY 'END_DATE(DB)       : ' AS-END-DATE.
+000000     DISPLAY 'CURRENT_DATE(PARAM): ' WS-PARAM-DATE-CURRENT.
+000000     DISPLAY 'START_DATE(INT)    : ' HV-DAYS-START-COMP.
+000000     DISPLAY 'END_DATE(INT)      : ' HV-DAYS-END-COMP.
+000000     DISPLAY 'CURRENT_DATE(INT)  : ' HV-DAYS-CURRENT-COMP.
+000000     DISPLAY 'ACTUAL_DAYS        : ' WS-DAYS-ACTUAL.
+000000     DISPLAY 'TERM_DAYS          : ' WS-DAYS-TERM.
+000000     DISPLAY 'INTEREST_RATE      : ' WS-RATE-INTEREST.
+000000     DISPLAY 'NONTERM_RATE       : ' WS-RATE-NONTERM.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
