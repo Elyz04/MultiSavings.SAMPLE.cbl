@@ -24,7 +24,10 @@
 000000*
 000000 FILE                            SECTION.
 000000*
-000000 FD INPUT-FILE.
+000000 FD  INPUT-FILE
+000000     RECORDING MODE IS F
+000000     RECORD CONTAINS 11 CHARACTERS.
+000000*
 000000 01 INPUT-REC                    PIC X(11).
 000000*
 000000 WORKING-STORAGE                 SECTION.
@@ -37,8 +40,7 @@
 000000*/-------------------------------------------------------------/*  
 000000 01 CST-VARIABLES.
 000000    03 CST-EOF                   PIC X      VALUE 'N'.
-000000    03 CST-ERROR-MSG             PIC X(100) VALUE SPACES.
-000000    03 CST-REC-COUNT             PIC 9(09)  VALUE 0.
+000000    03 CST-REC-COUNT             PIC 9(03)  VALUE 0.
 000000    03 CST-START-PGM-MSG         PIC X(10)  VALUE 'START MAIN'.
 000000    03 CST-STOP-PGM-MSG          PIC X(09)  VALUE 'STOP MAIN'.
 000000*/-------------------------------------------------------------/*
@@ -56,53 +58,36 @@
 000000* MAIN                   SECTION |      （MAIN）                           
 000000*                                |                                       
 000000*/-------------------------------------------------------------/*
-000000 MAIN.
 000000*
 000000     DISPLAY CST-START-PGM-MSG
 000000*
 000000     OPEN INPUT INPUT-FILE.
 000000     IF WS-IN-STATUS NOT = '00'
-000000         MOVE 'ERROR OPEN INPUT FILE, STATUS : '
-000000                                 TO 
-000000              CST-ERROR-MSG
-000000         PERFORM HANDLE-ERROR
+000000         DISPLAY 'ERROR OPEN INPUT FILE, STATUS : ' WS-IN-STATUS
+000000         STOP RUN
 000000     END-IF.
 000000*
 000000     PERFORM UNTIL CST-EOF = 'Y'
 000000         READ INPUT-FILE
 000000             AT END
-000000                 MOVE 'Y'        TO      CST-EOF
+000000                 MOVE 'Y'        TO          CST-EOF
 000000             NOT AT END
-000000                 ADD 1           TO      CST-REC-COUNT
-000000                 DISPLAY 'RECORD #'      CST-REC-COUNT
-000000                 MOVE INPUT-REC  TO      LNK-PARAM-DATA
-000000                 DISPLAY 'CALL PGM001 WITH: '
-000000                         LNK-PARAM-DATA
-000000                 CALL 'PGM001'   USING   LNK-PARAM-JCL
+000000                 ADD 1           TO          CST-REC-COUNT
+000000                 MOVE INPUT-REC  TO          LNK-PARAM-DATA
+000000                 DISPLAY 'RECORD #'          CST-REC-COUNT
+000000                 DISPLAY 'LNK-PARAM-DATA : ' LNK-PARAM-DATA
+000000                 CALL    'PGM001' USING      LNK-PARAM-JCL
 000000         END-READ
 000000     END-PERFORM
 000000*
 000000     CLOSE INPUT-FILE.
 000000     IF WS-IN-STATUS NOT = '00'
-000000         MOVE 'ERROR CLOSE INPUT FILE, STATUS : '
-000000                                 TO 
-000000              CST-ERROR-MSG
-000000         PERFORM HANDLE-ERROR
+000000         DISPLAY 'ERROR CLOSE INPUT FILE, STATUS : ' WS-IN-STATUS
+000000         STOP RUN
 000000     END-IF.
 000000*
-000000     DISPLAY 'TOTAL RECORD : '           CST-REC-COUNT
+000000     DISPLAY 'TOTAL RECORD : ' CST-REC-COUNT
 000000     DISPLAY CST-STOP-PGM-MSG
-000000*
-000000     STOP RUN.
-000000*/-------------------------------------------------------------/*         
-000000*                                | NOTE: 異常終了処理                     
-000000* HANDLE-ERROR           SECTION |      （COMMON）                      
-000000*                                |                                      
-000000*/-------------------------------------------------------------/* 
-000000 HANDLE-ERROR.
-000000*
-000000     DISPLAY CST-ERROR-MSG
-000000     DISPLAY 'FILE STATUS : ' WS-IN-STATUS
 000000*
 000000     STOP RUN.
 000000*/-------------------------------------------------------------/* 

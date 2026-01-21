@@ -767,24 +767,24 @@
 000000*
 000000 DISPLAY-DETAIL-FUN001.
 000000*
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/--------------------------------------/*'.
 000000     DISPLAY 'OUTPUT FUNCTION-001 : INTEREST CALCULATION'.
-000000     DISPLAY '*/----------------------------------------------/*'
-000000     DISPLAY 'ORDER_ID            : ' AS-ORDER-ID
-000000     DISPLAY 'ACC_ID              : ' AS-ACC-ID
-000000     DISPLAY 'SAVING_TYPE         : ' AS-SAVING-TYPE
-000000     DISPLAY 'MONEY_ROOT          : ' AS-MONEY-ROOT
-000000     DISPLAY 'INTEREST_RATE       : ' WS-RATE-INTEREST
-000000     DISPLAY 'INTEREST            : ' WS-AMOUNT-INTEREST
-000000     DISPLAY 'TOTAL               : ' WS-AMOUNT-TOTAL
-000000     DISPLAY 'STATUS              : ' CST-STATUS-1
-000000     DISPLAY '*/----------------------------------------------/*'
-000000     DISPLAY 'START_DATE(DB)      : ' AS-START-DATE
-000000     DISPLAY 'CURRENT_DATE        : ' HV-DATE-CURRENT-9
-000000     DISPLAY 'START_DATE(INT)     : ' HV-DAYS-START-COMP
-000000     DISPLAY 'CURRENT_DATE(INT)   : ' HV-DAYS-CURRENT-COMP
-000000     DISPLAY 'ACTUAL_DAYS         : ' WS-DAYS-ACTUAL
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/--------------------------------------/*'.
+000000     DISPLAY 'ORDER_ID            : ' AS-ORDER-ID.
+000000     DISPLAY 'ACC_ID              : ' AS-ACC-ID.
+000000     DISPLAY 'SAVING_TYPE         : ' AS-SAVING-TYPE.
+000000     DISPLAY 'MONEY_ROOT          : ' AS-MONEY-ROOT.
+000000     DISPLAY 'INTEREST_RATE       : ' WS-RATE-INTEREST.
+000000     DISPLAY 'INTEREST            : ' WS-AMOUNT-INTEREST.
+000000     DISPLAY 'TOTAL               : ' WS-AMOUNT-TOTAL.
+000000     DISPLAY 'STATUS              : ' CST-STATUS-1.
+000000     DISPLAY '*/--------------------------------------/*'.
+000000     DISPLAY 'START_DATE(DB)      : ' AS-START-DATE.
+000000     DISPLAY 'CURRENT_DATE        : ' HV-DATE-CURRENT-9.
+000000     DISPLAY 'START_DATE(INT)     : ' HV-DAYS-START-COMP.
+000000     DISPLAY 'CURRENT_DATE(INT)   : ' HV-DAYS-CURRENT-COMP.
+000000     DISPLAY 'ACTUAL_DAYS         : ' WS-DAYS-ACTUAL.
+000000     DISPLAY '*/--------------------------------------/*'.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -795,28 +795,28 @@
 000000*
 000000 DISPLAY-DETAIL-FUN002.
 000000*
-000000     DISPLAY '*/----------------------------------------------/*'
-000000     DISPLAY 'OUTPUT FUNCTION-002 : SETTLEMENT'
-000000     DISPLAY '*/----------------------------------------------/*'
-000000     DISPLAY 'ORDER_ID            : ' AS-ORDER-ID
-000000     DISPLAY 'ACC_ID              : ' AB-ACC-ID
-000000     DISPLAY 'SAVING_TYPE         : ' AS-SAVING-TYPE
-000000     DISPLAY 'MONEY_ROOT          : ' AS-MONEY-ROOT
-000000     DISPLAY 'INTEREST            : ' WS-AMOUNT-INTEREST
-000000     DISPLAY 'TOTAL               : ' WS-AMOUNT-TOTAL
-000000     DISPLAY 'STATUS              : ' CST-STATUS-9
-000000     DISPLAY '*/----------------------------------------------/*'
-000000     DISPLAY 'START_DATE(DB)      : ' AS-START-DATE
-000000     DISPLAY 'END_DATE(DB)        : ' AS-END-DATE
-000000     DISPLAY 'CURRENT_DATE        : ' HV-DATE-CURRENT-9
-000000     DISPLAY 'START_DATE(INT)     : ' HV-DAYS-START-COMP
-000000     DISPLAY 'END_DATE(INT)       : ' HV-DAYS-END-COMP
-000000     DISPLAY 'CURRENT_DATE(INT)   : ' HV-DAYS-CURRENT-COMP
-000000     DISPLAY 'ACTUAL_DAYS         : ' WS-DAYS-ACTUAL
-000000     DISPLAY 'TERM_DAYS           : ' WS-DAYS-TERM
-000000     DISPLAY 'INTEREST_RATE       : ' WS-RATE-INTEREST
-000000     DISPLAY 'NONTERM_RATE        : ' WS-RATE-NONTERM
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/----------------------------/*'.
+000000     DISPLAY 'OUTPUT FUNCTION-002 : SETTLEMENT'.
+000000     DISPLAY '*/----------------------------/*'.
+000000     DISPLAY 'ORDER_ID            : ' AS-ORDER-ID.
+000000     DISPLAY 'ACC_ID              : ' AB-ACC-ID.
+000000     DISPLAY 'SAVING_TYPE         : ' AS-SAVING-TYPE.
+000000     DISPLAY 'MONEY_ROOT          : ' AS-MONEY-ROOT.
+000000     DISPLAY 'INTEREST            : ' WS-AMOUNT-INTEREST.
+000000     DISPLAY 'TOTAL               : ' WS-AMOUNT-TOTAL.
+000000     DISPLAY 'STATUS              : ' CST-STATUS-9.
+000000     DISPLAY '*/----------------------------/*'.
+000000     DISPLAY 'START_DATE(DB)      : ' AS-START-DATE.
+000000     DISPLAY 'END_DATE(DB)        : ' AS-END-DATE.
+000000     DISPLAY 'CURRENT_DATE        : ' HV-DATE-CURRENT-9.
+000000     DISPLAY 'START_DATE(INT)     : ' HV-DAYS-START-COMP.
+000000     DISPLAY 'END_DATE(INT)       : ' HV-DAYS-END-COMP.
+000000     DISPLAY 'CURRENT_DATE(INT)   : ' HV-DAYS-CURRENT-COMP.
+000000     DISPLAY 'ACTUAL_DAYS         : ' WS-DAYS-ACTUAL.
+000000     DISPLAY 'TERM_DAYS           : ' WS-DAYS-TERM.
+000000     DISPLAY 'INTEREST_RATE       : ' WS-RATE-INTEREST.
+000000     DISPLAY 'NONTERM_RATE        : ' WS-RATE-NONTERM.
+000000     DISPLAY '*/----------------------------/*'.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -826,19 +826,19 @@
 000000*/-------------------------------------------------------------/* 
 000000 DISPLAY-TOTAL.
 000000*    
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-001 : ' 
 000000             CST-COUNT-FUNC001.
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-002 : ' 
 000000             CST-COUNT-FUNC002.
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED BALANCE           : '
 000000             CST-COUNT-UPD-BALANCE.
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED SAVING STATUS     : '
 000000             CST-COUNT-UPD-STATUS.
-000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY '*/---------------------------------------/*'.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
