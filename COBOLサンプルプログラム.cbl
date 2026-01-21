@@ -57,8 +57,6 @@
 000000    03 WS-PARAM-ACCID-CHAR       PIC X(09).   
 000000    03 WS-PARAM-ACCID-DISP       PIC 9(09). 
 000000    03 WS-PARAM-ACCID            PIC S9(09)       COMP. 
-000000    03 WS-PARAM-DATE-CHAR        PIC X(08).   
-000000    03 WS-PARAM-DATE-CURRENT     PIC 9(08).  
 000000*/-------------------------------------------------------------/*
 000000*  ホスト変数                                                    
 000000*/-------------------------------------------------------------/*     
@@ -109,7 +107,7 @@
 000000 LINKAGE                         SECTION.
 000000 01 LNK-PARAM-JCL.
 000000    03 LNK-PARAM-LENGHT          PIC S9(04) COMP.
-000000    03 LNK-PARAM-DATA            PIC X(50).   
+000000    03 LNK-PARAM-DATA            PIC X(11).   
 000000*===============================================================*         
 000000*====        ＰＲＯＣＥＤＵＲＥ　　 　　ＤＩＶＩＳＩＯＮ        ====*         
 000000*===============================================================*       
@@ -151,12 +149,22 @@
 000000*                                |                                       
 000000*/-------------------------------------------------------------/*
 000000 HANDLE-JCL-PARAM.
-000000*--- (X,YYYYYYYYY,ZZZZZZZZ)
+000000*
+000000     IF LNK-PARAM-LENGHT = 0
+000000     OR LNK-PARAM-LENGHT > 11
+000000         DISPLAY 'INVALID JCL PARAM LENGTH'
+000000         STOP RUN
+000000     END-IF.
+000000*
+000000     IF CST-DEBUG-MODE = 'Y'
+000000         DISPLAY 'LNK-PARAM-LENGHT : ' LNK-PARAM-LENGHT
+000000         DISPLAY 'LNK-PARAM-DATA   : ' LNK-PARAM-DATA
+000000     END-IF.
+000000*--- (X,YYYYYYYYY)
 000000     UNSTRING LNK-PARAM-DATA     
 000000         DELIMITED BY ','        
 000000         INTO WS-PARAM-FUNC      
 000000              WS-PARAM-ACCID-CHAR
-000000              WS-PARAM-DATE-CHAR
 000000     END-UNSTRING.
 000000*
 000000     IF WS-PARAM-ACCID-CHAR = SPACES
@@ -174,16 +182,6 @@
 000000     END-IF.                                              
 000000*
 000000     PERFORM VALIDATE-JCL-PARAM.
-000000*
-000000     IF WS-PARAM-DATE-CHAR = SPACES          
-000000         MOVE FUNCTION CURRENT-DATE(1:8)  
-000000                                 TO 
-000000                       WS-PARAM-DATE-CURRENT             
-000000     ELSE                                 
-000000         MOVE WS-PARAM-DATE-CHAR             
-000000                                 TO 
-000000              WS-PARAM-DATE-CURRENT              
-000000     END-IF.
 000000*---
 000000     IF CST-ACCID-FLAG = 'Y'
 000000         PERFORM CHECK-ACCID-STATUS
@@ -217,7 +215,6 @@
 000000*
 000000     PERFORM VALIDATE-FUNC-PARAM
 000000     PERFORM VALIDATE-ACCID-PARAM
-000000     PERFORM VALIDATE-DATE-PARAM
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -246,40 +243,11 @@
 000000*/-------------------------------------------------------------/*
 000000 VALIDATE-ACCID-PARAM.
 000000*--- ACC_ID FORMAT CHECK
-000000     IF WS-PARAM-ACCID-CHAR NOT = SPACES
-000000         IF WS-PARAM-ACCID-CHAR IS NOT NUMERIC
-000000             DISPLAY 'ACC_ID PARAM IS NOT NUMERIC : '
-000000                     WS-PARAM-ACCID-CHAR
-000000             STOP RUN
-000000         END-IF
-000000     END-IF.
-000000     EXIT.
-000000*/-------------------------------------------------------------/*         
-000000*                                | NOTE: 受信した日付値を確認する                  
-000000* VALIDATE-DATE-PARAM    SECTION |      （COMMON)                        
-000000*                                |                                      
-000000*/-------------------------------------------------------------/*
-000000 VALIDATE-DATE-PARAM.
-000000*--- CURRENT_DATE
-000000     IF WS-PARAM-DATE-CHAR NOT = SPACES
-000000         IF WS-PARAM-DATE-CHAR IS NOT NUMERIC
-000000             DISPLAY 'DATE PARAM IS NOT NUMERIC : '
-000000                     WS-PARAM-DATE-CHAR
-000000             STOP RUN
-000000         END-IF
-000000         MOVE WS-PARAM-DATE-CHAR TO HV-DATE-START-9
-000000         COMPUTE HV-DAYS-START-COMP =
-000000             FUNCTION INTEGER-OF-DATE(HV-DATE-START-9)
-000000         MOVE FUNCTION CURRENT-DATE(1:8)
-000000             TO HV-DATE-CURRENT-9
-000000         COMPUTE HV-DAYS-CURRENT-COMP =
-000000             FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9)
-000000         IF HV-DAYS-START-COMP < HV-DAYS-CURRENT-COMP
-000000             DISPLAY 'INVALID DATE PARAM (PAST DATE) : '
-000000                     WS-PARAM-DATE-CHAR
-000000             STOP RUN
-000000         END-IF
-000000     END-IF.
+000000     IF WS-PARAM-ACCID-CHAR(1:9) IS NOT NUMERIC    
+000000         DISPLAY 'ACCOUNT ID PARAM IS NOT NUMERIC : '  
+000000                 WS-PARAM-ACCID-CHAR               
+000000         STOP RUN                                  
+000000     END-IF.                                       
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: ACC_IDを確認してください                  
@@ -484,8 +452,9 @@
 000000*                                |                                      
 000000*/-------------------------------------------------------------/* 
 000000 GET-CURR-DATE-FUN001.
-000000*--- 
-000000     MOVE WS-PARAM-DATE-CURRENT  TO      HV-DATE-CURRENT-9
+000000*
+000000     MOVE FUNCTION CURRENT-DATE(1:8)
+000000         TO HV-DATE-CURRENT-9.
 000000*--- CONVERT CURRENT DATE TO INTEGER DAYS
 000000     COMPUTE HV-DAYS-CURRENT-COMP =
 000000         FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9).
@@ -509,8 +478,9 @@
 000000*                                |                                      
 000000*/-------------------------------------------------------------/* 
 000000 GET-CURR-DATE-FUN002.
-000000*--- 
-000000     MOVE WS-PARAM-DATE-CURRENT  TO      HV-DATE-CURRENT-9
+000000*
+000000     MOVE FUNCTION CURRENT-DATE(1:8)
+000000         TO HV-DATE-CURRENT-9.
 000000*--- CONVERT CURRENT DATE TO INTEGER DAYS
 000000     COMPUTE HV-DAYS-CURRENT-COMP =
 000000         FUNCTION INTEGER-OF-DATE(HV-DATE-CURRENT-9).
@@ -797,20 +767,24 @@
 000000*
 000000 DISPLAY-DETAIL-FUN001.
 000000*
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'OUTPUT FUNCTION-001 : INTEREST CALCULATION'.
-000000     DISPLAY 'ORDER_ID           : ' AS-ORDER-ID.
-000000     DISPLAY 'ACC_ID             : ' AS-ACC-ID.
-000000     DISPLAY 'SAVING_TYPE        : ' AS-SAVING-TYPE.
-000000     DISPLAY 'MONEY_ROOT         : ' AS-MONEY-ROOT.
-000000     DISPLAY 'INTEREST           : ' WS-AMOUNT-INTEREST.
-000000     DISPLAY 'TOTAL              : ' WS-AMOUNT-TOTAL.
-000000     DISPLAY 'STATUS             : ' CST-STATUS-1.
-000000     DISPLAY 'START_DATE(DB)     : ' AS-START-DATE.
-000000     DISPLAY 'CURRENT_DATE(PARAM): ' WS-PARAM-DATE-CURRENT.
-000000     DISPLAY 'START_DATE(INT)    : ' HV-DAYS-START-COMP.
-000000     DISPLAY 'CURRENT_DATE(INT)  : ' HV-DAYS-CURRENT-COMP.
-000000     DISPLAY 'ACTUAL_DAYS        : ' WS-DAYS-ACTUAL.
-000000     DISPLAY 'INTEREST_RATE      : ' WS-RATE-INTEREST.
+000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY 'ORDER_ID            : ' AS-ORDER-ID
+000000     DISPLAY 'ACC_ID              : ' AS-ACC-ID
+000000     DISPLAY 'SAVING_TYPE         : ' AS-SAVING-TYPE
+000000     DISPLAY 'MONEY_ROOT          : ' AS-MONEY-ROOT
+000000     DISPLAY 'INTEREST_RATE       : ' WS-RATE-INTEREST
+000000     DISPLAY 'INTEREST            : ' WS-AMOUNT-INTEREST
+000000     DISPLAY 'TOTAL               : ' WS-AMOUNT-TOTAL
+000000     DISPLAY 'STATUS              : ' CST-STATUS-1
+000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY 'START_DATE(DB)      : ' AS-START-DATE
+000000     DISPLAY 'CURRENT_DATE        : ' HV-DATE-CURRENT-9
+000000     DISPLAY 'START_DATE(INT)     : ' HV-DAYS-START-COMP
+000000     DISPLAY 'CURRENT_DATE(INT)   : ' HV-DAYS-CURRENT-COMP
+000000     DISPLAY 'ACTUAL_DAYS         : ' WS-DAYS-ACTUAL
+000000     DISPLAY '*/----------------------------------------------/*'
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -821,24 +795,28 @@
 000000*
 000000 DISPLAY-DETAIL-FUN002.
 000000*
-000000     DISPLAY 'OUTPUT FUNCTION-002 : SETTLEMENT'.
-000000     DISPLAY 'ORDER_ID           : ' AS-ORDER-ID.
-000000     DISPLAY 'ACC_ID             : ' AB-ACC-ID.
-000000     DISPLAY 'SAVING_TYPE        : ' AS-SAVING-TYPE.
-000000     DISPLAY 'MONEY_ROOT         : ' AS-MONEY-ROOT.
-000000     DISPLAY 'INTEREST           : ' WS-AMOUNT-INTEREST.
-000000     DISPLAY 'TOTAL              : ' WS-AMOUNT-TOTAL.
-000000     DISPLAY 'STATUS             : ' CST-STATUS-9.
-000000     DISPLAY 'START_DATE(DB)     : ' AS-START-DATE.
-000000     DISPLAY 'END_DATE(DB)       : ' AS-END-DATE.
-000000     DISPLAY 'CURRENT_DATE(PARAM): ' WS-PARAM-DATE-CURRENT.
-000000     DISPLAY 'START_DATE(INT)    : ' HV-DAYS-START-COMP.
-000000     DISPLAY 'END_DATE(INT)      : ' HV-DAYS-END-COMP.
-000000     DISPLAY 'CURRENT_DATE(INT)  : ' HV-DAYS-CURRENT-COMP.
-000000     DISPLAY 'ACTUAL_DAYS        : ' WS-DAYS-ACTUAL.
-000000     DISPLAY 'TERM_DAYS          : ' WS-DAYS-TERM.
-000000     DISPLAY 'INTEREST_RATE      : ' WS-RATE-INTEREST.
-000000     DISPLAY 'NONTERM_RATE       : ' WS-RATE-NONTERM.
+000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY 'OUTPUT FUNCTION-002 : SETTLEMENT'
+000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY 'ORDER_ID            : ' AS-ORDER-ID
+000000     DISPLAY 'ACC_ID              : ' AB-ACC-ID
+000000     DISPLAY 'SAVING_TYPE         : ' AS-SAVING-TYPE
+000000     DISPLAY 'MONEY_ROOT          : ' AS-MONEY-ROOT
+000000     DISPLAY 'INTEREST            : ' WS-AMOUNT-INTEREST
+000000     DISPLAY 'TOTAL               : ' WS-AMOUNT-TOTAL
+000000     DISPLAY 'STATUS              : ' CST-STATUS-9
+000000     DISPLAY '*/----------------------------------------------/*'
+000000     DISPLAY 'START_DATE(DB)      : ' AS-START-DATE
+000000     DISPLAY 'END_DATE(DB)        : ' AS-END-DATE
+000000     DISPLAY 'CURRENT_DATE        : ' HV-DATE-CURRENT-9
+000000     DISPLAY 'START_DATE(INT)     : ' HV-DAYS-START-COMP
+000000     DISPLAY 'END_DATE(INT)       : ' HV-DAYS-END-COMP
+000000     DISPLAY 'CURRENT_DATE(INT)   : ' HV-DAYS-CURRENT-COMP
+000000     DISPLAY 'ACTUAL_DAYS         : ' WS-DAYS-ACTUAL
+000000     DISPLAY 'TERM_DAYS           : ' WS-DAYS-TERM
+000000     DISPLAY 'INTEREST_RATE       : ' WS-RATE-INTEREST
+000000     DISPLAY 'NONTERM_RATE        : ' WS-RATE-NONTERM
+000000     DISPLAY '*/----------------------------------------------/*'
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -848,15 +826,19 @@
 000000*/-------------------------------------------------------------/* 
 000000 DISPLAY-TOTAL.
 000000*    
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-001 : ' 
 000000             CST-COUNT-FUNC001.
-000000*
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-002 : ' 
 000000             CST-COUNT-FUNC002.
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED BALANCE           : '
 000000             CST-COUNT-UPD-BALANCE.
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED SAVING STATUS     : '
 000000             CST-COUNT-UPD-STATUS.
+000000     DISPLAY '*/----------------------------------------------/*'
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -865,23 +847,31 @@
 000000*                                |                                      
 000000*/-------------------------------------------------------------/*     
 000000 ABEND-PROGRAM.
-000000*                                                  
+000000*                 
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'ABEND-PROGRAM'.
+000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'ERROR MODULE : ' CST-ABEND-BREAKPOINT.
 000000     DISPLAY 'ERROR DETAIL : ' CST-ABEND-DETAIL.
 000000     DISPLAY 'SQLCODE      : ' SQLCODE.
 000000     DISPLAY 'SQLSTATE     : ' SQLSTATE.
+000000     DISPLAY '*/----------------------------------------------/*'
 000000*--- ROLLBACK
 000000     EXEC SQL
 000000         ROLLBACK
 000000     END-EXEC.
 000000*--- ROLLBACK 結果確認
 000000     IF SQLCODE = 0
+000000         DISPLAY '*/------------------------------------------/*'
 000000         DISPLAY 'ROLLBACK SUCCESS'
+000000         DISPLAY '*/------------------------------------------/*'
 000000     ELSE
+000000         DISPLAY '*/------------------------------------------/*'
 000000         DISPLAY 'ROLLBACK FAILED'
+000000         DISPLAY '*/------------------------------------------/*'
 000000         DISPLAY 'ROLLBACK SQLCODE  : ' SQLCODE
 000000         DISPLAY 'ROLLBACK SQLSTATE : ' SQLSTATE
+000000         DISPLAY '*/------------------------------------------/*'
 000000     END-IF.
 000000*
 000000     STOP RUN.  
