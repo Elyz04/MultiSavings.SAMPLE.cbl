@@ -225,7 +225,8 @@
 000000 VALIDATE-FUNC-PARAM.
 000000*--- DEFAULT FUNCTION
 000000     IF WS-PARAM-FUNC = SPACES
-000000         MOVE CST-PARAM-3        TO      WS-PARAM-FUNC
+000000         DISPLAY 'FUNCTION PARAM IS REQUIRED'
+000000         EXIT PROGRAM
 000000     END-IF.
 000000*--- CHECK VALUE
 000000     IF  WS-PARAM-FUNC NOT = CST-PARAM-1
@@ -826,19 +827,14 @@
 000000*/-------------------------------------------------------------/* 
 000000 DISPLAY-TOTAL.
 000000*    
-000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-001 : ' 
 000000             CST-COUNT-FUNC001.
-000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS PROCESSED IN FUNCTION-002 : ' 
 000000             CST-COUNT-FUNC002.
-000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED BALANCE           : '
 000000             CST-COUNT-UPD-BALANCE.
-000000     DISPLAY '*/---------------------------------------/*'.
 000000     DISPLAY 'TOTAL ACCOUNTS UPDATED SAVING STATUS     : '
 000000             CST-COUNT-UPD-STATUS.
-000000     DISPLAY '*/---------------------------------------/*'.
 000000*
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -848,30 +844,22 @@
 000000*/-------------------------------------------------------------/*     
 000000 ABEND-PROGRAM.
 000000*                 
-000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'ABEND-PROGRAM'.
-000000     DISPLAY '*/----------------------------------------------/*'
 000000     DISPLAY 'ERROR MODULE : ' CST-ABEND-BREAKPOINT.
 000000     DISPLAY 'ERROR DETAIL : ' CST-ABEND-DETAIL.
 000000     DISPLAY 'SQLCODE      : ' SQLCODE.
 000000     DISPLAY 'SQLSTATE     : ' SQLSTATE.
-000000     DISPLAY '*/----------------------------------------------/*'
 000000*--- ROLLBACK
 000000     EXEC SQL
 000000         ROLLBACK
 000000     END-EXEC.
 000000*--- ROLLBACK 結果確認
 000000     IF SQLCODE = 0
-000000         DISPLAY '*/------------------------------------------/*'
 000000         DISPLAY 'ROLLBACK SUCCESS'
-000000         DISPLAY '*/------------------------------------------/*'
 000000     ELSE
-000000         DISPLAY '*/------------------------------------------/*'
 000000         DISPLAY 'ROLLBACK FAILED'
-000000         DISPLAY '*/------------------------------------------/*'
 000000         DISPLAY 'ROLLBACK SQLCODE  : ' SQLCODE
 000000         DISPLAY 'ROLLBACK SQLSTATE : ' SQLSTATE
-000000         DISPLAY '*/------------------------------------------/*'
 000000     END-IF.
 000000*
 000000     STOP RUN.  
