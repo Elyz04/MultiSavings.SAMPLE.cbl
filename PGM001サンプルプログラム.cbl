@@ -100,7 +100,7 @@
 000000*--- DEBUG / ABEND 処理  
 000000    03 CST-ABEND-BREAKPOINT      PIC X(100) VALUE SPACES.
 000000    03 CST-ABEND-DETAIL          PIC X(100) VALUE SPACES.  
-000000    03 CST-DEBUG-MODE            PIC X(01)  VALUE 'Y'.
+000000    03 CST-DEBUG-MODE            PIC X(01)  VALUE 'N'.
 000000*/-------------------------------------------------------------/*
 000000*  JCL パラメータ受け取りエリア                                                     
 000000*/-------------------------------------------------------------/* 
@@ -131,7 +131,7 @@
 000000*
 000000     DISPLAY                     CST-STOP-PGM-MSG.
 000000*
-000000     EXIT PROGRAM.
+000000     STOP RUN.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 変数初期化                       
 000000* INITIALIZE             SECTION |      （COMMON）                        
@@ -152,8 +152,10 @@
 000000*
 000000     IF LNK-PARAM-LENGHT = 0
 000000     OR LNK-PARAM-LENGHT > 11
+000000         DISPLAY '----CASE001-START----'
 000000         DISPLAY 'INVALID JCL PARAM LENGTH'
-000000         EXIT PROGRAM
+000000         DISPLAY '----CASE001-END------'
+000000         STOP RUN
 000000     END-IF.
 000000*
 000000     IF CST-DEBUG-MODE = 'Y'
@@ -168,9 +170,11 @@
 000000     END-UNSTRING.
 000000*
 000000     IF WS-PARAM-ACCID-CHAR = SPACES
-000000     OR WS-PARAM-ACCID-CHAR = LOW-VALUES                      
+000000     OR WS-PARAM-ACCID-CHAR = LOW-VALUES
+000000         DISPLAY '----CASE002-START----'                      
 000000         DISPLAY 'ACCOUNT ID PARAM IS REQUIRED'
-000000         EXIT PROGRAM                        
+000000         DISPLAY '----CASE002-END------'
+000000         STOP RUN                        
 000000     ELSE                                                 
 000000         MOVE 'Y'                TO      CST-ACCID-FLAG               
 000000         MOVE WS-PARAM-ACCID-CHAR
@@ -189,20 +193,26 @@
 000000*---                             
 000000     EVALUATE WS-PARAM-FUNC
 000000         WHEN CST-PARAM-1
+000000             DISPLAY '----CASE003-START----'  
 000000             DISPLAY 'START FUN_001 : CALCULATE_INTEREST'
 000000             PERFORM             FUNCTION-001
 000000             DISPLAY CST-DONE-FNC001-MSG
+000000             DISPLAY '----CASE003-END------'
 000000         WHEN CST-PARAM-2
+000000             DISPLAY '----CASE004-START----'  
 000000             DISPLAY 'START FUN_002 : SETTLEMENT'
 000000             PERFORM             FUNCTION-002
 000000             DISPLAY CST-DONE-FNC002-MSG
+000000             DISPLAY '----CASE004-END------'
 000000         WHEN CST-PARAM-3
+000000             DISPLAY '----CASE005-START----'  
 000000             DISPLAY 'START FUN_001 : CALCULATE_INTEREST'
 000000             PERFORM             FUNCTION-001
 000000             DISPLAY CST-DONE-FNC001-MSG
 000000             DISPLAY 'START FUN_002 : SETTLEMENT'
 000000             PERFORM             FUNCTION-002
 000000             DISPLAY CST-DONE-FNC002-MSG
+000000             DISPLAY '----CASE005-END------'  
 000000     END-EVALUATE. 
 000000*---
 000000     EXIT.
@@ -225,16 +235,20 @@
 000000 VALIDATE-FUNC-PARAM.
 000000*--- DEFAULT FUNCTION
 000000     IF WS-PARAM-FUNC = SPACES
+000000         DISPLAY '----CASE006-START----' 
 000000         DISPLAY 'FUNCTION PARAM IS REQUIRED'
-000000         EXIT PROGRAM
+000000         DISPLAY '----CASE006-END------'  
+000000         STOP RUN
 000000     END-IF.
 000000*--- CHECK VALUE
 000000     IF  WS-PARAM-FUNC NOT = CST-PARAM-1
 000000     AND WS-PARAM-FUNC NOT = CST-PARAM-2
 000000     AND WS-PARAM-FUNC NOT = CST-PARAM-3
+000000         DISPLAY '----CASE007-START----' 
 000000         DISPLAY 'FUNCTION PARAM IS INVALID : '
 000000                 WS-PARAM-FUNC
-000000         EXIT PROGRAM
+000000         DISPLAY '----CASE007-END------'  
+000000         STOP RUN
 000000     END-IF.
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -244,10 +258,12 @@
 000000*/-------------------------------------------------------------/*
 000000 VALIDATE-ACCID-PARAM.
 000000*--- ACC_ID FORMAT CHECK
-000000     IF WS-PARAM-ACCID-CHAR(1:9) IS NOT NUMERIC    
+000000     IF WS-PARAM-ACCID-CHAR(1:9) IS NOT NUMERIC
+000000         DISPLAY '----CASE008-START----'     
 000000         DISPLAY 'ACCOUNT ID PARAM IS NOT NUMERIC : '  
-000000                 WS-PARAM-ACCID-CHAR               
-000000         EXIT PROGRAM                                  
+000000                 WS-PARAM-ACCID-CHAR  
+000000         DISPLAY '----CASE008-END------'               
+000000         STOP RUN                                  
 000000     END-IF.                                       
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
@@ -271,12 +287,14 @@
 000000                                 TO 
 000000              CST-ABEND-DETAIL
 000000         PERFORM ABEND-PROGRAM
+000000     ELSE
+000000         DISPLAY 'HV-TOTAL-SAVING-CNT' HV-TOTAL-SAVING-CNT
 000000     END-IF.
 000000     IF HV-TOTAL-SAVING-CNT = 0
 000000         DISPLAY 'ACC_ID '
 000000                 WS-PARAM-ACCID
 000000                 ' NOT FOUND'
-000000         EXIT PROGRAM
+000000         STOP RUN
 000000     END-IF.
 000000     EXEC SQL
 000000         SELECT COUNT(*)
@@ -298,7 +316,7 @@
 000000         DISPLAY 'ACC_ID '
 000000                 WS-PARAM-ACCID
 000000                 ' HAS BEEN FULLY SETTLED'
-000000         EXIT PROGRAM
+000000         STOP RUN
 000000     END-IF.
 000000*
 000000     EXIT.

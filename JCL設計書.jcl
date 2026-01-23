@@ -131,7 +131,7 @@
 //SYSTSIN  DD   *                                                       
   DSN SYSTEM (DB9G)                                                     
   RUN PROGRAM(PGM001)-
-  PARM('3,000004002,20261212')-                                                   
+  PARM('3,000004002')-                                                   
   PLAN(DF01)-                        
   LIBRARY ('XXX.XXX.LOAD')
   END                                                                   
