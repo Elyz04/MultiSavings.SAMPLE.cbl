@@ -13,11 +13,11 @@
 //*SET LIBPRFX='CEE'RC.DBRMLIB                                          
 //*SET GOPGM=GOPT.SRC.CBL                                               
 // SET MEMB=SPD9999SET                                                      
-// SET LOAD=FPT.SRC.LOAD                                                
-// SET DBRMLIB=FPT.SRC.DBRMLIB                                         
-// SET SRCLIB=FPT.SRC.CBL                                               
+// SET LOAD=XXX.XXX.LOAD                                                
+// SET DBRMLIB=XXX.XXX.DBRMLIB                                         
+// SET SRCLIB=XXX.XXX.CBL                                               
 // SET WSPC=500                                                         
-// SET INCLUDE=FPT.SRC.DCLGEN                    
+// SET INCLUDE=XXX.XXX.DCLGEN                    
 //*------------------------------------------------------------*
 //* PRE-COMPILE（DB2プリコンパイル）                                    
 //* 内容：COBOLソース内のEXEC SQL文をプリコンパイルし、DBRMを生成         
