@@ -472,8 +472,7 @@
 000000                                 TO     
 000000              CST-ABEND-DETAIL
 000000         PERFORM SPD9999-ABEND                          
-000000     END-IF.                                              
-000000*                                                         
+000000     END-IF.                                                                                                       
 000000     PERFORM SPD9999-FETCH-SET
 000000     PERFORM UNTIL CST-EOF-CRS2 = 'Y'
 000000         PERFORM SPD9999-PROC-SET
