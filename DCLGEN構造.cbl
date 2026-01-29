@@ -99,5 +99,5 @@
 000000    03 II-SAVING-TYPE            PIC X(10).                        
 000000    03 II-INTEREST-RATE          PIC S9(1)V9(4)  USAGE COMP-3.      
 000000*---------------------------------------------------------------*
-000000*--- THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 2       
+000000*--- THE NUMBER OF COLUMNS DESCRIBED BY THIS DECLARATION IS 2   
 000000*****************************************************************
