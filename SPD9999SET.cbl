@@ -160,12 +160,12 @@
 000000*                                |                                       
 000000*/-------------------------------------------------------------/*         
 000000 SPD9999-INIT-CALC.
-000000     MOVE           0            TO      WS-DAYS-ACTUAL.
-000000     MOVE           0            TO      WS-DAYS-TERM.
-000000     MOVE           0            TO      WS-AMOUNT-INTEREST.
-000000     MOVE           0            TO      WS-AMOUNT-TOTAL.
-000000     MOVE           0            TO      WS-RATE-INTEREST.
-000000     MOVE           0            TO      WS-RATE-NONTERM.
+000000     MOVE 0                      TO WS-DAYS-ACTUAL.
+000000     MOVE 0                      TO WS-DAYS-TERM.
+000000     MOVE 0                      TO WS-AMOUNT-INTEREST.
+000000     MOVE 0                      TO WS-AMOUNT-TOTAL.
+000000     MOVE 0                      TO WS-RATE-INTEREST.
+000000     MOVE 0                      TO WS-RATE-NONTERM.
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 計算用ワーク初期化         
@@ -335,7 +335,7 @@
 000000         SELECT COUNT(*)
 000000         INTO   :HV-TOTAL-SAVING-CNT
 000000         FROM   MYDB.DB_ACCOUNT_SAVINGS
-000000         WHERE  ACC_ID = :WS-PARAM-ACC-ID
+000000         WHERE  ACC_ID = :WS-PARAM-ACC-ID-COMP
 000000     END-EXEC.
 000000     IF SQLCODE NOT = 0
 000000         MOVE 'SPD9999-CHK-ACC-EXIST'
@@ -404,7 +404,7 @@
 000000                 MONEY_ROOT                             
 000000         FROM    MYDB.DB_ACCOUNT_SAVINGS                     
 000000         WHERE   STATUS = :CST-STATUS-1
-000000         AND     ACC_ID = :WS-PARAM-ACC-ID
+000000         AND     ACC_ID = :WS-PARAM-ACC-ID-COMP
 000000     END-EXEC. 
 000000     EXEC SQL                                                
 000000         OPEN CRS1                                           
@@ -415,7 +415,7 @@
 000000         MOVE 'SPD9999-PREVIEW'     
 000000                                 TO     
 000000              CST-ABEND-BREAKPOINT 
-000000         MOVE 'OPEN CSR 1 FAILED'     
+000000         MOVE 'OPEN CURSOR CRS1 FAILED'     
 000000                                 TO     
 000000              CST-ABEND-DETAIL             
 000000         PERFORM SPD9999-ABEND                            
@@ -434,7 +434,7 @@
 000000         MOVE 'SPD9999-PREVIEW'     
 000000                                 TO     
 000000              CST-ABEND-BREAKPOINT
-000000         MOVE 'CLOSE CSR 1 FAILED'     
+000000         MOVE 'CLOSE CURSOR CRS1 FAILED'     
 000000                                 TO     
 000000              CST-ABEND-DETAIL              
 000000         PERFORM SPD9999-ABEND                            
@@ -468,7 +468,7 @@
 000000         MOVE 'SPD9999-SETTLE'     
 000000                                 TO      
 000000              CST-ABEND-BREAKPOINT
-000000         MOVE 'OPEN CSR 2 FAILED'     
+000000         MOVE 'OPEN CURSOR CRS2 FAILED'     
 000000                                 TO     
 000000              CST-ABEND-DETAIL
 000000         PERFORM SPD9999-ABEND                          
@@ -487,7 +487,7 @@
 000000         MOVE 'SPD9999-SETTLE'     
 000000                                 TO     
 000000              CST-ABEND-BREAKPOINT
-000000         MOVE 'CLOSE CSR 2 FAILED'     
+000000         MOVE 'CLOSE CURSOR CRS2 FAILED'     
 000000                                 TO     
 000000              CST-ABEND-DETAIL              
 000000         PERFORM SPD9999-ABEND                            
@@ -516,7 +516,7 @@
 000000             MOVE 'SPD9999-FETCH-PREV'
 000000                                 TO 
 000000                  CST-ABEND-BREAKPOINT
-000000             MOVE 'FETCH CSR1 FAILED'
+000000             MOVE 'FETCH CURSOR CRS1 FAILED'
 000000                                 TO 
 000000                  CST-ABEND-DETAIL
 000000             PERFORM SPD9999-ABEND
@@ -620,13 +620,10 @@
 000000*                                |
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-CALC-PREV.
-000000     IF AS-SAVING-TYPE = CST-NON-TERM
-000000         COMPUTE WS-AMOUNT-INTEREST =
-000000                 AS-MONEY-ROOT      *
-000000                 WS-RATE-INTEREST   *
-000000                 WS-DAYS-ACTUAL     / 
-000000                 CST-FIXED-VALUE-12
-000000     ELSE
+000000     IF  AS-SAVING-TYPE = CST-NON-TERM
+000000     OR  AS-SAVING-TYPE = CST-FIXED-03
+000000     OR  AS-SAVING-TYPE = CST-FIXED-06
+000000     OR  AS-SAVING-TYPE = CST-FIXED-12
 000000         COMPUTE WS-AMOUNT-INTEREST =
 000000                 AS-MONEY-ROOT      *
 000000                 WS-RATE-INTEREST   *
@@ -685,7 +682,7 @@
 000000     EXIT.                                                   
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 決済対象データ取得               
-000000* SPD9999-FETCH-SET      SECTION |      （SPX95160487）                        
+000000* SPD9999-FETCH-SET      SECTION |      （SPX95160487）                    
 000000*                                |       STATUS = '1' の預金を取得        
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-FETCH-SET.
@@ -707,7 +704,7 @@
 000000             MOVE 'SPD9999-FETCH-SET'
 000000                                 TO 
 000000                  CST-ABEND-BREAKPOINT
-000000             MOVE 'FETCH CRS2 FAILED'
+000000             MOVE 'FETCH CURSOR CRS2 FAILED'
 000000                                 TO 
 000000                  CST-ABEND-DETAIL
 000000             PERFORM SPD9999-ABEND
@@ -739,7 +736,7 @@
 000000     EXIT.
 000000*/-------------------------------------------------------------/*
 000000*                                | NOTE: 口座残高取得                     
-000000* SPD9999-GET-BAL        SECTION |      （SPX95160487）                        
+000000* SPD9999-GET-BAL        SECTION |      （SPX95160487）                  
 000000*                                |      対象: DB_ACCOUNT_BALANCE          
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-GET-BAL.
@@ -764,7 +761,7 @@
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 口座残高更新                 
-000000* SPD9999-UPD-BAL        SECTION |      （SPX95160487)                       
+000000* SPD9999-UPD-BAL        SECTION |      （SPX95160487)                    
 000000*                                |                                      
 000000*/-------------------------------------------------------------/* 
 000000 SPD9999-UPD-BAL.
@@ -788,7 +785,7 @@
 000000     EXIT.
 000000*/-------------------------------------------------------------/*         
 000000*                                | NOTE: 預金ステータス更新              
-000000* SPD9999-UPD-SAV        SECTION |      （SPX95160487)                        
+000000* SPD9999-UPD-SAV        SECTION |      （SPX95160487)                 
 000000*                                |                                      
 000000*/-------------------------------------------------------------/*     
 000000 SPD9999-UPD-SAV.
@@ -849,10 +846,10 @@
 000000*/-------------------------------------------------------------/*     
 000000 SPD9999-ABEND.
 000000     DISPLAY 'SPD9999-ABEND'.
-000000     DISPLAY 'ERROR MODULE : ' CST-ABEND-BREAKPOINT.
-000000     DISPLAY 'ERROR DETAIL : ' CST-ABEND-DETAIL.
-000000     DISPLAY 'SQLCODE      : ' SQLCODE.
-000000     DISPLAY 'SQLSTATE     : ' SQLSTATE.
+000000     DISPLAY 'MODULE   : ' CST-ABEND-BREAKPOINT.
+000000     DISPLAY 'DETAIL   : ' CST-ABEND-DETAIL.
+000000     DISPLAY 'SQLCODE  : ' SQLCODE.
+000000     DISPLAY 'SQLSTATE : ' SQLSTATE.
 000000     EXEC SQL
 000000         ROLLBACK
 000000     END-EXEC.

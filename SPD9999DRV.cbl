@@ -5,7 +5,7 @@
 000000*    PROGRAM-ID     :            SPD9999DRV                               
 000000*    CREATE DATE    :            2026/01/21
 000000*    UPDATE DATE    :            XXXX/XX/XX                              
-000000*    AUTHOR         :            Elyz                      
+000000*    AUTHOR         :            Elyz04                      
 000000*    PURPOSE        :            SPD9999SET に送信された一連の 
 000000*                                PARM の送信と実行
 000000*/-------------------------------------------------------------/*   

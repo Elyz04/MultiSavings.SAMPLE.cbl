@@ -25,7 +25,7 @@
 000000             FOREIGN KEY (SAVING_TYPE)
 000000             REFERENCES MYDB.DB_INTEREST_INFO (SAVING_TYPE),
 000000         CONSTRAINT CK_SAVINGS_STATUS
-000000             CHECK (STATUS IN ('1','1'))
+000000             CHECK (STATUS IN ('1','9'))
 000000     );
 000000*---------------------------------------------------------------*
 000000*--- 初期データ登録（有効・解約データを含む）

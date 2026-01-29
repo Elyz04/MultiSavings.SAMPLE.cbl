@@ -7,7 +7,7 @@
 //* UPDATE :
 //*   2026/01/21 : SRCフォーマットに統一
 //*------------------------------------------------------------*
-//MAIN     JOB NOTIFY=&SYSUID,TIME=(0,20)
+//SPD9DRV JOB NOTIFY=&SYSUID,TIME=(0,20)
 //*------------------------------------------------------------*
 //* 変数定義
 //*------------------------------------------------------------*
@@ -16,7 +16,7 @@
 // SET SRCLIB=XXX.XXX.CBL           
 // SET CPYLIB=XXX.XXX.DCLGEN        
 // SET PGM=SPD9999SET                   
-// SET MEMB=MAIN                    
+// SET MEMB=SPD9999DRV                    
 // SET WSPC=800                     
 // SET INPUT=XXX.XXX.READ           
 //*------------------------------------------------------------*
@@ -114,7 +114,7 @@ END
 //SYSOUT   DD   SYSOUT=*
 //SYSTSIN  DD   *
 DSN SYSTEM(DB9G)
-  RUN PROGRAM(MAIN)- 
+  RUN PROGRAM(SPD9999DRV)- 
   PLAN(DF02)
 END
 /*
