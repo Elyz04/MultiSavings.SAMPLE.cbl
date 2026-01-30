@@ -333,7 +333,7 @@
 000000*/-------------------------------------------------------------/*
 000000*                                | [NOTE] ACC_ID チェック
 000000* SPD9999-CHK-ACC-EXIST  SECTION |      （COMMON）
-000000*                                |       DB_ACCOUNT_SAVINGS
+000000*                                |       
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-CHK-ACC-EXIST.
 000000     EXEC SQL
@@ -364,7 +364,7 @@
 000000*/-------------------------------------------------------------/*
 000000*                                | [NOTE] 有効な預金チェック
 000000* SPD9999-CHK-ACC-ACTIVE SECTION |      （COMMON）
-000000*                                |       ACTIVE SAVING 判定
+000000*                                |       
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-CHK-ACC-ACTIVE.
 000000     EXEC SQL
@@ -425,7 +425,7 @@
 000000              CST-ABEND-DETAIL             
 000000         PERFORM SPD9999-ABEND                            
 000000     END-IF.
-000000     PERFORM SPD9999-FETCH-PREV                                        
+000000     PERFORM SPD9999-FETCH-PREV.                                        
 000000     PERFORM UNTIL CST-EOF-CRS1 = 'Y'
 000000         PERFORM SPD9999-PROC-PREV                            
 000000         PERFORM SPD9999-FETCH-PREV                                  
@@ -691,7 +691,7 @@
 000000*/-------------------------------------------------------------/*         
 000000*                                | [NOTE] 決済対象データ取得               
 000000* SPD9999-FETCH-SET      SECTION |      （SPX95160487）                    
-000000*                                |       STATUS = '1' の預金を取得        
+000000*                                |               
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-FETCH-SET.
 000000     EXEC SQL
@@ -745,7 +745,7 @@
 000000*/-------------------------------------------------------------/*
 000000*                                | [NOTE] 口座残高取得                     
 000000* SPD9999-GET-BAL        SECTION |      （SPX95160487）                  
-000000*                                |      対象: DB_ACCOUNT_BALANCE          
+000000*                                |               
 000000*/-------------------------------------------------------------/*
 000000 SPD9999-GET-BAL.
 000000     EXEC SQL
@@ -779,7 +779,7 @@
 000000         WHERE   ACC_ID  = :AB-ACC-ID                        
 000000     END-EXEC.
 000000     IF SQLCODE = 0
-000000         ADD 1 TO CST-COUNT-UPD-BALANCE
+000000         ADD 1                   TO      CST-COUNT-UPD-BALANCE
 000000         CONTINUE
 000000     ELSE
 000000         MOVE 'SPD9999-UPD-BAL' 
@@ -803,7 +803,7 @@
 000000         WHERE      ORDER_ID = :AS-ORDER-ID                      
 000000     END-EXEC.                                                     
 000000     IF SQLCODE = 0
-000000         ADD 1 TO CST-COUNT-UPD-STATUS
+000000         ADD 1                   TO      CST-COUNT-UPD-STATUS
 000000         CONTINUE
 000000     ELSE  
 000000         MOVE 'SPD9999-UPD-SAV' 
