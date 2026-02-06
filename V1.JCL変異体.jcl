@@ -7,7 +7,7 @@
 //*        2026/01/19 : COBOL ソースに値を渡す      
 //*-------------------------------------------------------------*
 //SPD9SET   JOB (ACCT#),'SPD9999SET',CLASS=A,MSGCLASS=X,                     
-//         NOTIFY=&SYSUID                                               
+//          NOTIFY=&SYSUID                                               
 //*SET LNGPRFX='IGY410'                                                 
 //*SET SYSLBLK=3200.LOAD                                                
 //*SET LIBPRFX='CEE'RC.DBRMLIB                                          
